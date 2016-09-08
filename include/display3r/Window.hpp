@@ -17,7 +17,7 @@ struct Event;
 
 class Window {
 public:
-    
+
     bool IsValidCoordinate(ivec2 const& coord);
     virtual void SetPixel(ivec2 const &coord, Color const &color) = 0;
     virtual int GetWidth() = 0;
@@ -25,11 +25,11 @@ public:
     virtual void Clear() = 0;
     virtual void Update() = 0;
     virtual bool PollEvent(Event &) = 0;
-    
+
     bool HandleEvents(Scene &scene, Renderer &renderer);
 
     static Window *MakeWindow(Config const&);
-    
+
 protected:
     Window(int window, int height, Color const & bg);
     int m_width, m_height;
@@ -40,7 +40,7 @@ protected:
 class SDL_Window : public Window {
 public:
     SDL_Window(int width, int height, Color const &bg);
-    
+
     int GetWidth() override;
     int GetHeight() override;
     void Clear() override;
@@ -52,10 +52,24 @@ public:
 private:
     static bool SDL_Inited;
     static void InitSDLOnce();
-    
+
+private:
+    bool handleMouseButtonUpEvent(SDL_Event &sdl_event);
+    bool handleMouseButtonDownEvent(SDL_Event &sdl_event);
+    bool handleMouseMotionEvent(Event &event, SDL_Event &sdl_event);
+    bool handleMouseWheelEvent(Event &event, SDL_Event &sdl_event);
+    bool handleKeyUpEvent(Event &event, SDL_Event &sdl_event);
+    bool handleKeyDownEvent(Event &event, SDL_Event &sdl_event);
+    bool handleWindowEvent(Event &event, SDL_Event &sdl_event);
+
+
 private:
     ::SDL_Window *m_window;
     ::SDL_Renderer *m_renderer;
+
+    bool _rightClickDown;
+    int _mouseX;
+    int _mouseY;
 };
 
 struct Event {

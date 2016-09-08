@@ -65,7 +65,9 @@ Color SDL_Window::GetPixel(ivec2 const & coord)
 }
 
 SDL_Window::SDL_Window(int width, int height, Color const &bg):
-    Window(width, height, bg)
+    Window(width, height, bg),
+    _rightClickDown(false),
+    _mouseX(0), _mouseY(0)
 {
     InitSDLOnce();
     
@@ -78,46 +80,72 @@ SDL_Window::SDL_Window(int width, int height, Color const &bg):
     m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_SOFTWARE);
 }
 
-struct sdl_state {
-    int rightClickDown;
-    int mouseX;
-    int mouseY;
-};
-static struct sdl_state state;
+bool SDL_Window::PollEvent(Event &event)
+{
+    SDL_Event sdl_event;
+    if (!SDL_PollEvent(&sdl_event))
+        return false;
 
-static bool handleMouseMotionEvent(Event &event, SDL_Event &sdl_event)
+    switch (sdl_event.type) {
+    case SDL_QUIT:
+        event.type = Event::QUIT;
+        return true;
+    case SDL_KEYDOWN:
+        return handleKeyDownEvent(event, sdl_event);
+    case SDL_KEYUP:
+        return handleKeyUpEvent(event, sdl_event);
+    case SDL_MOUSEMOTION:
+        return handleMouseMotionEvent(event, sdl_event);
+    case SDL_MOUSEBUTTONUP:
+        return handleMouseButtonUpEvent(sdl_event);
+    case SDL_MOUSEBUTTONDOWN:
+        return handleMouseButtonDownEvent(sdl_event);
+    case SDL_MOUSEWHEEL:
+        return handleMouseWheelEvent(event, sdl_event);
+    case SDL_WINDOWEVENT:
+        return handleWindowEvent(event, sdl_event);
+    default:
+        return false;
+    }
+
+    #ifdef __GNUC__
+    __builtin_unreachable();
+    #endif
+}
+
+bool SDL_Window::handleMouseMotionEvent(Event &event, SDL_Event &sdl_event)
 {
     event.type = Event::ROTATE;
-    if (state.rightClickDown) {
-	if (sdl_event.motion.x < state.mouseX)
+    if (_rightClickDown) {
+	if (sdl_event.motion.x < _mouseX)
             event.direction = LEFT;
-	else if (sdl_event.motion.x > state.mouseX)
+	else if (sdl_event.motion.x > _mouseX)
             event.direction = RIGHT;
-	else if (sdl_event.motion.y < state.mouseY)
+	else if (sdl_event.motion.y < _mouseY)
             event.direction = UP;
-	else if (sdl_event.motion.y > state.mouseY)
+	else if (sdl_event.motion.y > _mouseY)
             event.direction = DOWN;
     }
-    state.mouseX = sdl_event.motion.x;
-    state.mouseY = sdl_event.motion.y;
+    _mouseX = sdl_event.motion.x;
+    _mouseY = sdl_event.motion.y;
     return true;
 }
 
-static bool handleMouseButtonUpEvent(SDL_Event &sdl_event)
+bool SDL_Window::handleMouseButtonUpEvent(SDL_Event &sdl_event)
 {
     switch (sdl_event.button.button) {
     case SDL_BUTTON_RIGHT:
-	state.rightClickDown = 0;
+	_rightClickDown = false;
     default:
         return false;
     }
 }
 
-static bool handleMouseButtonDownEvent(SDL_Event &sdl_event)
+bool SDL_Window::handleMouseButtonDownEvent(SDL_Event &sdl_event)
 {
     switch (sdl_event.button.button) {
     case SDL_BUTTON_RIGHT:
-	state.rightClickDown = 1;
+	_rightClickDown = true;
         return false;
     default:
         return false;
@@ -125,7 +153,7 @@ static bool handleMouseButtonDownEvent(SDL_Event &sdl_event)
     return false;
 }
 
-static bool handleMouseWheelEvent(Event &event, SDL_Event &sdl_event)
+bool SDL_Window::handleMouseWheelEvent(Event &event, SDL_Event &sdl_event)
 {
     event.type = Event::TRANSLATE;
     if (sdl_event.wheel.y > 0)
@@ -137,7 +165,7 @@ static bool handleMouseWheelEvent(Event &event, SDL_Event &sdl_event)
     return true;
 }
 
-static bool handleKeyDownEvent(Event &event, SDL_Event &sdl_event)
+bool SDL_Window::handleKeyDownEvent(Event &event, SDL_Event &sdl_event)
 {
     switch (sdl_event.key.keysym.sym) {
     case SDLK_q:
@@ -189,7 +217,7 @@ static bool handleKeyDownEvent(Event &event, SDL_Event &sdl_event)
     return true;
 }
 
-static bool handleKeyUpEvent(Event &event, SDL_Event &sdl_event)
+bool SDL_Window::handleKeyUpEvent(Event &event, SDL_Event &sdl_event)
 {
     switch (sdl_event.key.keysym.sym) {
     case SDLK_o:
@@ -223,7 +251,7 @@ static bool handleKeyUpEvent(Event &event, SDL_Event &sdl_event)
     return true;
 }
 
-static bool handleWindowEvent(Event &event, SDL_Event &sdl_event)
+bool SDL_Window::handleWindowEvent(Event &event, SDL_Event &sdl_event)
 {
     switch(sdl_event.window.event) {
     case SDL_WINDOWEVENT_RESIZED:
@@ -235,41 +263,6 @@ static bool handleWindowEvent(Event &event, SDL_Event &sdl_event)
         return false;
     }
 }
-
-bool SDL_Window::PollEvent(Event &event)
-{
-    SDL_Event sdl_event;
-    if (!SDL_PollEvent(&sdl_event))
-        return false;
-
-    switch (sdl_event.type) {
-    case SDL_QUIT:
-        event.type = Event::QUIT;
-        return true;
-    case SDL_KEYDOWN:
-        return handleKeyDownEvent(event, sdl_event);
-    case SDL_KEYUP:
-        return handleKeyUpEvent(event, sdl_event);
-    case SDL_MOUSEMOTION:
-        return handleMouseMotionEvent(event, sdl_event);
-    case SDL_MOUSEBUTTONUP:
-        return handleMouseButtonUpEvent(sdl_event);
-    case SDL_MOUSEBUTTONDOWN:
-        return handleMouseButtonDownEvent(sdl_event);
-    case SDL_MOUSEWHEEL:
-        return handleMouseWheelEvent(event, sdl_event);
-    case SDL_WINDOWEVENT:
-        return handleWindowEvent(event, sdl_event);
-    default:
-        return false;
-    }
-
-    #ifdef __GNUC__
-    __builtin_unreachable();
-    #endif
-}
-
-
 
 }; // end namespace display3r
 
