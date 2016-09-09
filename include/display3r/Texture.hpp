@@ -17,7 +17,7 @@ public:
     ~Texture();
     static Texture *LoadTexture(std::string const &filename);
     Color GetColor(ivec2 P);
-    
+
 private:
     SDL_Surface *m_surface;
     int m_width;

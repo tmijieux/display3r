@@ -11,7 +11,7 @@ public:
     void Draw(Renderer &renderer);
     void SetHidden(bool value);
     void ToggleVisibility();
-    
+
 protected:
     virtual void DrawHandler(Renderer &renderer) = 0;
 

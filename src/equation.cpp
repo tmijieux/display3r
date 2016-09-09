@@ -3,7 +3,7 @@
 // Equation::Equation(std::string eqpath_): eqpath(eqpath_)
 // {
 //     this->readEquation(eqpath_);
-    
+
 //     this->xeq = this->parseLine(xeql);
 //     this->yeq = this->parseLine(yeql);
 //     this->zeq = this->parseLine(zeql);
@@ -15,7 +15,7 @@
 // 	Equation::Token::tokenize(line);
 //     Tree tree;
 //     Tree::Node *n1(NULL), *n2(NULL), *n3(NULL);
-	
+
 //     for (auto& tok : toks)  {
 // 	if (tok.isClosingParen()) {
 // 	    Tree::Node *n1, *n2, *n3;

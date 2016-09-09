@@ -23,9 +23,7 @@ struct Frame : public Object  {
 
     void Rotate(vec3 const &axis, float angle);
     void Translate(vec3 const &move);
-    
     void Reset();
-    
 protected:
     void DrawHandler(Renderer &renderer) override;
 };
@@ -33,4 +31,4 @@ protected:
 
 };
 
-#endif // FRAME_H 
+#endif // FRAME_H

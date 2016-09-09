@@ -1,14 +1,29 @@
 #include "display3r/Camera.hpp"
+#include "display3r/Util.hpp"
 
 using display3r::Camera;
 using display3r::Direction;
+using display3r::Lens;
+using namespace std;
 
-Camera::Camera(vec3 const &pos):
-    Frame(pos),
-    nearplan(0.1), farplan(100.),
-    wfov(30.), hfov(30.),
-    vspeed(1.0), rspeed(0.1)
+Camera::Camera():
+    vspeed(1.0), rspeed(1.0)
 {
+}
+
+Camera::Camera(std::string const &name, Config const &conf)
+{
+    std::string id = "camera." + name + ".";
+    vspeed = conf[id+"translationSpeed"].as<float>();
+    rspeed = conf[id+"rotationSpeed"].as<float>();
+    O = ParseVec3(conf[id+"position"].as<string>());
+    theta = conf[id+"theta"].as<float>();
+    phi = conf[id+"phi"].as<float>();
+    rho = conf[id+"rho"].as<float>();
+    vector<string> lenses;
+    lenses = conf[id+"lens"].as<vector<string> >();
+    for (auto &l : lenses)
+        m_lenses.push_back(Lens(*this, l, conf));
 }
 
 void Camera::Rotate(Direction direction)
@@ -32,4 +47,9 @@ void Camera::Translate(Direction direction)
     case UP:       Frame::Translate(k *vspeed);       break;
 
     }
+}
+
+std::vector<Lens> const &Camera::GetLenses()
+{
+    return m_lenses;
 }

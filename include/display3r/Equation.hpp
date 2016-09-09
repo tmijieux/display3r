@@ -18,11 +18,11 @@ public:
     //     		    float *minT, float *maxT, int *precisionT,
     //     		    char *x, char *y, char *z, int strSize,
     //     		    std::string eqpath);
-    
+
     // Point getPointFromEquation(float s, float t);
-    
+
     // Tree parseLine(std::string);
-	
+
     // private:
     // State state;
     // std::stack<void*> stack;
@@ -34,13 +34,13 @@ public:
     //     bool isClosingParen();
     // };
 
-    
+
     // std::string eqpath;
     // std::string xeql, yeql, zeql;
     // Tree xeq, yeq, zeq;
-    
+
     // const int VARS[2] = { 't', 's' };
-    
+
     // enum {FUNCTION, OPERATOR, NUMBER};
     // enum {COS, SIN, SQRT, SQR};
     // enum {PLUS, MINUS, TIMES, OVER};

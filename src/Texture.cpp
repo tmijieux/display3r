@@ -22,7 +22,7 @@ Texture::Texture(string const &filename):
 	std::cerr <<  SDL_GetError() << std::endl;
     else
 	std::cout << "Texture successfully loaded" << std::endl;
-    
+
     m_width = m_surface->format->BitsPerPixel/8 * m_surface->w;
     m_height = m_surface->h;
 }

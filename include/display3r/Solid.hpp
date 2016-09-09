@@ -8,8 +8,7 @@
 
 namespace display3r { class Solid; }
 
-
-#include "display3r/Face.hpp"
+#include "display3r/Object3D.hpp"
 #include "display3r/Color.hpp"
 #include "display3r/Object.hpp"
 #include "display3r/Texture.hpp"
@@ -25,15 +24,13 @@ using std::ifstream;
 using std::vector;
 
 class Solid : public Object {
-
-
 public:
     Solid(string filepath, Texture*);
 /*    Solid(Equation const&, Texture); */
-    
+
 private:
     void DrawHandler(Renderer &renderer) override;
-    
+
 private:
     void LoadOBJ(ifstream &file);
 
@@ -44,12 +41,12 @@ private:
                             vector<vec3>const &vertex,
                             vector<vec3>const &normal,
                             vector<vec2>const &texcoord);
-    
+
     void ParseFace(vector<string>  const &s,
                    vector<vec3>const &v/*ertex*/,
                    vector<vec3>const &n/*ormal*/,
                    vector<vec2>const &t/*excoord*/);
-      
+
 
     std::vector<Face> m_faces;
     Texture *m_texture;

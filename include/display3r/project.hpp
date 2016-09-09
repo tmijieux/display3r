@@ -16,11 +16,11 @@ namespace display3r {
 
 
 vec3 ProjectPoint(vec3 const& A, vec3 const& B);
-    
+
 // return the projection of a vector between user.position
 // and A, knowing the depth of A
 ivec2 ProjectCoord(vec3 const& OA, float depth);
-	
+
 void ProjectVertex(Vertex const& v);
 void ProjectSegment(Vertex const& A, Vertex const& B);
 void ProjectFace(Face const &F);

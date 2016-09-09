@@ -20,6 +20,7 @@ public:
 
     bool IsValidCoordinate(ivec2 const& coord);
     virtual void SetPixel(ivec2 const &coord, Color const &color) = 0;
+    virtual Color GetPixel(ivec2 const &coord) = 0;
     virtual int GetWidth() = 0;
     virtual int GetHeight() = 0;
     virtual void Clear() = 0;
@@ -54,13 +55,13 @@ private:
     static void InitSDLOnce();
 
 private:
-    bool handleMouseButtonUpEvent(SDL_Event &sdl_event);
-    bool handleMouseButtonDownEvent(SDL_Event &sdl_event);
-    bool handleMouseMotionEvent(Event &event, SDL_Event &sdl_event);
-    bool handleMouseWheelEvent(Event &event, SDL_Event &sdl_event);
-    bool handleKeyUpEvent(Event &event, SDL_Event &sdl_event);
-    bool handleKeyDownEvent(Event &event, SDL_Event &sdl_event);
-    bool handleWindowEvent(Event &event, SDL_Event &sdl_event);
+    void handleMouseButtonUpEvent(SDL_Event &sdl_event);
+    void handleMouseButtonDownEvent(SDL_Event &sdl_event);
+    void handleMouseMotionEvent(Event &event, SDL_Event &sdl_event);
+    void handleMouseWheelEvent(Event &event, SDL_Event &sdl_event);
+    void handleKeyUpEvent(Event &event, SDL_Event &sdl_event);
+    void handleKeyDownEvent(Event &event, SDL_Event &sdl_event);
+    void handleWindowEvent(Event &event, SDL_Event &sdl_event);
 
 
 private:
@@ -74,6 +75,7 @@ private:
 
 struct Event {
     enum EventType {
+        OTHER,
         QUIT,
         ROTATE,
         TRANSLATE,

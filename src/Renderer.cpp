@@ -4,12 +4,12 @@
 #include "display3r/Renderer.hpp"
 #include "display3r/Window.hpp"
 
-
+using std::vector;
 using display3r::Renderer;
 using display3r::ZBuffer;
 
-Renderer::Renderer(Camera const *camera, Window *window):
-    m_camera(camera), m_window(window)
+Renderer::Renderer(Window *window):
+    m_lens(NULL), m_window(window), m_untexturedColor(0, 255, 255)
 {
     Resize(m_window->GetWidth(), m_window->GetHeight());
 }
@@ -18,6 +18,16 @@ void Renderer::Clear()
 {
     m_window->Clear();
     m_zbuf.Clear();
+}
+
+void Renderer::BindTexture(Texture *texture)
+{
+    m_texture = texture;
+}
+
+void Renderer::BindLights(vector<Light> *lights)
+{
+    m_lights = lights;
 }
 
 void Renderer::Resize(int width, int height)
@@ -36,6 +46,17 @@ void ZBuffer::Resize(int width, int height)
     m_buf.resize(width*height);
 }
 
+void Renderer::SetLens(Lens const *lens)
+{
+    m_lens = lens;
+    m_nearplan = lens->GetNearPlan();
+    m_width = lens->GetWindowWidth();
+    m_height = lens->GetWindowHeight();
+    m_wfov = lens->GetHFov();
+    m_hfov = lens->GetWFov();
+
+    // lens->ConfigureZBuffer(m_zbuf);
+}
 
 void Renderer::SetColor(Color const &drawColor)
 {
@@ -57,4 +78,3 @@ void Renderer::PopState()
     std::tie(m_drawState, m_drawColor) = m_states.top();
     m_states.pop();
 }
-

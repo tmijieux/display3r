@@ -20,7 +20,7 @@ static inline double strtod(std::string const &s)
 {
     std::istringstream istr(s);
     double d;
-    
+
     istr.imbue(std::locale("C"));
     istr >> d;
     return d;
@@ -30,7 +30,7 @@ static inline int atoi(std::string const &s)
     return ::atoi(s.c_str());
 }
 
-}
+}; // end namespace display3r
 
 void Solid::ParseVertex(vector<string> const &s, vector<vec3> &vertex)
 {
@@ -40,7 +40,7 @@ void Solid::ParseVertex(vector<string> const &s, vector<vec3> &vertex)
     v.x = strtod(s[0]);
     v.y = strtod(s[1]);
     v.z = strtod(s[2]);
-    
+
     vertex.push_back(v);
 }
 
@@ -52,7 +52,7 @@ void Solid::ParseNormal(vector<string> const &s, vector<vec3> &normal)
     n.x = strtod(s[0]);
     n.y = strtod(s[1]);
     n.z = strtod(s[2]);
-    
+
     normal.push_back(n);
 }
 
@@ -63,7 +63,7 @@ void Solid::ParseTexCoord(vector<string> const &s, vector<vec2> &texcoord)
         throw exception("invalid texcoord");
     t.x = strtod(s[0]);
     t.y = strtod(s[1]);
-    
+
     texcoord.push_back(t);
 }
 
@@ -76,15 +76,15 @@ Vertex Solid::ParseVertexIndex(string rep,
     vector<string> s;
     boost::trim(rep);
     boost::split(s, rep, boost::is_any_of("/"));
-    
+
     if (!s.size() || s.size() > 3)
         throw exception("bad face element");
-    
-    v.m_position = vertex[atoi(s[0])-1];
-    if (s.size() >= 2)
-        v.m_texcoord = texcoord[atoi(s[1])-1];
+
+    v.position = vertex[atoi(s[0])-1];
+    if (s.size() >= 2 && s[1] != "")
+        v.texcoord = texcoord[atoi(s[1])-1];
     if (s.size() == 3)
-        v.m_normal = normal[atoi(s[2])-1];
+        v.normal = normal[atoi(s[2])-1];
     return v;
 }
 
@@ -116,7 +116,7 @@ void Solid::LoadOBJ(ifstream &file)
     std::vector<vec3> normals;
     std::vector<vec3> vertex;
     std::vector<vec2> texcoords;
-    
+
     string line;
     while (getline(file, line)) {
         boost::trim(line);
@@ -135,17 +135,14 @@ void Solid::LoadOBJ(ifstream &file)
     }
 }
 
-
 Solid::Solid(string filepath, Texture *texture):
-    m_texture(NULL)
+    m_texture(texture)
 {
     ifstream f(filepath);
-    
+
     if (!f.is_open())
 	throw exception(filepath+": "+strerror(errno)) ;
 
-    m_texture = texture;
-    
     LoadOBJ(f);
     std::cout << "Solid "<< filepath << " successfully loaded" << std::endl;
     f.close();
@@ -165,13 +162,13 @@ void Solid::DrawHandler(Renderer &renderer)
 //     char x[MAXLENGTH];
 //     char y[MAXLENGTH];
 //     char z[MAXLENGTH];
-    
+
 //     if (!initEquation(&minS, &maxS, &precisionS,
 // 		      &minT, &maxT, &precisionT,
 // 		      x, y, z, MAXLENGTH, eqName)) {
 // 	fprintf(stderr, "Error loading equation\n");
 // 	return NULL;
-//     } else 
+//     } else
 // 	printf("Equation successfully initialized\n");
 
 //     Solid *solid = malloc(sizeof(Solid));
@@ -197,9 +194,9 @@ void Solid::DrawHandler(Renderer &renderer)
 
 //     if ((solid->texture = SDL_LoadBMP(texpath.c_str())) == NULL)
 // 	fprintf(stderr, "%s\n", SDL_GetError());
-    
+
 //     if (solid->numVertices > 0)
-// 	getValueFromEquation(x, y, z, s, t, &solid->vertices[0]);	
+// 	getValueFromEquation(x, y, z, s, t, &solid->vertices[0]);
 
 //     for (p = 0; p < solid->numVertices; p++) {
 // 	Point *A;
@@ -208,7 +205,7 @@ void Solid::DrawHandler(Renderer &renderer)
 // 	Point *normal = &solid->normals[p];
 // 	Point u;
 // 	Point v;
-	
+
 // 	printf("%d => s: %f, t: %f\n", p, s, t);
 // 	printf("%d => x: %f, y: %f, z: %f\n", p, O->x, O->y, O->z);
 
@@ -230,14 +227,14 @@ void Solid::DrawHandler(Renderer &renderer)
 // 	} else if (p < precisionS) { // south
 // 	    A = &solid->vertices[p + 1];
 // 	    B = &solid->vertices[p + precisionS];
-	    
+
 // 	    getValueFromEquation(x, y, z, s + ds, t, A);
 // 	    getValueFromEquation(x, y, z, s, t + dt, B);
 // 	    s += ds;
 // 	} else { // elsewhere
 // 	    A = &solid->vertices[p + 1];
 // 	    B = &solid->vertices[p + precisionS];
-	    
+
 // 	    getValueFromEquation(x, y, z, s, t + dt, B);
 // 	    s += ds;
 // 	}

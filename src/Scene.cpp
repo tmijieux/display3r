@@ -7,10 +7,12 @@
 #include <SDL.h>
 
 #include "display3r/Scene.hpp"
+#include "display3r/Config.hpp"
 #include "display3r/Frame.hpp"
 #include "display3r/Solid.hpp"
 #include "display3r/Color.hpp"
 #include "display3r/Equation.hpp"
+#include "display3r/Renderer.hpp"
 
 using std::string;
 using display3r::Scene;
@@ -18,10 +20,13 @@ using display3r::Frame;
 using display3r::Camera;
 using display3r::Direction;
 
-Scene::Scene():
-    m_camera(vec3(0., -5., 0.)),
-    m_origin(vec3(0.))
+Scene::Scene(Config const &conf):
+    m_camera(conf.SceneCamera, conf)
 {
+    vector<string> lights;
+    lights = conf["scene.light"].as<vector<string> >();
+    for (auto &l : lights)
+        m_lights.push_back(Light(l, conf));
 }
 
 void Scene::AskSolid()
@@ -33,7 +38,7 @@ void Scene::AskSolid()
     printf(".obj path: ");
     getline(std::cin, objName);
     boost::trim(objName);
-    
+
     printf(".bmp path: ");
     getline(std::cin, bmpName);
 
@@ -49,10 +54,10 @@ void Scene::AskEquation()
     printf(".eq path: ");
 
     getline(std::cin, eqName);
-    
+
     printf(".bmp path: ");
     getline(std::cin, bmpName);
-    
+
     Equation eq(eqName);
     /* m_solids.push_back(Solid(eq, bmpName)); */
 }
@@ -65,9 +70,18 @@ void Scene::RemoveSolid()
 
 void Scene::Draw(Renderer &renderer)
 {
-    m_origin.Draw(renderer);
-    for (auto &s : m_solids)
-        s.Draw(renderer);
+    renderer.BindLights(&m_lights);
+
+    for (auto &lens : m_camera.GetLenses())
+    {
+        printf("have lens\n");
+
+        renderer.SetLens(&lens);
+
+        m_origin.Draw(renderer);
+        for (auto &s : m_solids)
+            s.Draw(renderer);
+    }
 }
 
 void Scene::HandleArgument(int argc, char *argv[])

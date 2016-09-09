@@ -4,8 +4,7 @@
 
 #include "display3r/Frame.hpp"
 #include "display3r/Color.hpp"
-#include "display3r/Vertex.hpp"
-#include "display3r/Face.hpp"
+#include "display3r/Object3D.hpp"
 #include "display3r/Renderer.hpp"
 
 //#include "display3r/project.hpp"
@@ -16,13 +15,13 @@ using display3r::Vertex;
 Frame::Frame():
     O(0.), i(1., 0., 0.), j(0., 1., 0.), k(0., 0., 1.)
 {
-    
+
 }
 
 Frame::Frame(vec3 const &pos):
     O(pos), i(1., 0., 0.), j(0., 1., 0.), k(0., 0., 1.)
 {
-    
+
 }
 
 void Frame::Reset()
@@ -34,16 +33,16 @@ void Frame::DrawHandler(Renderer &renderer)
 {
     Color color;
     Segment I(O, i), J(O, j), K(O, k);
-    
+
     renderer.PushState();
     renderer.SetDrawState(Renderer::DrawState::WIREFRAME);
-    
+
     renderer.SetColor(Color::RED);
     renderer.DrawSegment(I);
-    
+
     renderer.SetColor(Color::GREEN);
     renderer.DrawSegment(J);
-    
+
     renderer.SetColor(Color::BLUE);
     renderer.DrawSegment(K);
 

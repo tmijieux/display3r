@@ -10,30 +10,30 @@
 
 namespace display3r {
 
+class Config;
 class Renderer;
 
 // TODO move this
 enum scene_defaults {
     DEFAULT_WIDTH_FOV     = 80,
     DEFAULT_HEIGHT_FOV    = 60, // --> to camera
-    
+
     DEFAULT_SCREEN_WIDTH  = 1200,
     DEFAULT_SCREEN_HEIDHT = 900 // --> to screen
 };
 
 class Scene {
 public:
-    Scene();
+    Scene(Config const &conf);
     void LoadSolid(std::string const &filename);
-    
+
     void AskSolid();
     void RemoveSolid();
     void AskEquation();
-    
+
     void Draw(Renderer &renderer);
     void HandleArgument(int argc, char *argv[]);
 
-    // Camera control
     Camera const* GetCamera() const;
     void TranslateCamera(Direction);
     void RotateCamera(Direction);
