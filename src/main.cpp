@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
     Renderer renderer(window, conf.RendererUntextured);
     bool stop = false;
 
-    // needed for initializing lenses stuffs: (zbuffer/dimensons/angles)
+    // needed for initializing lenses stuffs: (zbuffer/dimensions/fovs)
     scene.NotifyResize(window->GetWidth(), window->GetHeight());
 
     while (!stop) {

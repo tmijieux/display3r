@@ -1,5 +1,5 @@
-#ifndef DRAWABLE_H
-#define DRAWABLE_H
+#ifndef DISPLAY3R_DRAWABLE_H
+#define DISPLAY3R_DRAWABLE_H
 
 namespace display3r {
 
@@ -20,4 +20,4 @@ private:
 };
 
 };
-#endif //DRAWABLE_H
+#endif //DISPLAY3R_DRAWABLE_H

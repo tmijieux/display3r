@@ -1,5 +1,5 @@
-#ifndef ZBUFFER_H
-#define ZBUFFER_H
+#ifndef DISPLAY3R_ZBUFFER_H
+#define DISPLAY3R_ZBUFFER_H
 
 #include <vector>
 #include <glm/glm.hpp>
@@ -24,4 +24,4 @@ private:
 
 };
 
-#endif //ZBUFFER_H
+#endif //DISPLAY3R_ZBUFFER_H

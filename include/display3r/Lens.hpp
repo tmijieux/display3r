@@ -1,5 +1,5 @@
-#ifndef LENS_H
-#define LENS_H
+#ifndef DISPLAY3R_LENS_H
+#define DISPLAY3R_LENS_H
 
 #include <string>
 #include <glm/glm.hpp>
@@ -69,4 +69,4 @@ private:
 
 
 };
-#endif //LENS_H
+#endif //DISPLAY3R_LENS_H

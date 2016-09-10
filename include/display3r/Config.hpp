@@ -1,5 +1,5 @@
-#ifndef CONFIG_H
-#define CONFIG_H
+#ifndef DISPLAY3R_CONFIG_H
+#define DISPLAY3R_CONFIG_H
 
 #include <string>
 #include <set>
@@ -34,4 +34,4 @@ private:
 
 };
 
-#endif //CONFIG_H
+#endif //DISPLAY3R_CONFIG_H

@@ -1,5 +1,5 @@
-#ifndef TEXTURE_H
-#define TEXTURE_H
+#ifndef DISPLAY3R_TEXTURE_H
+#define DISPLAY3R_TEXTURE_H
 
 #include <SDL.h>
 #include <string>
@@ -29,4 +29,4 @@ private:
 
 };
 
-#endif //TEXTURE_H
+#endif //DISPLAY3R_TEXTURE_H

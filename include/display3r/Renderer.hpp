@@ -1,5 +1,5 @@
-#ifndef RENDERER_H
-#define RENDERER_H
+#ifndef DISPLAY3R_RENDERER_H
+#define DISPLAY3R_RENDERER_H
 
 #include <stack>
 #include <vector>
@@ -114,4 +114,4 @@ private:
 
 }; // end namespace display3r
 
-#endif //RENDERER_H
+#endif //DISPLAY3R_RENDERER_H

@@ -8,7 +8,7 @@ using namespace std;
 using display3r::Window;
 using display3r::Renderer;
 
-Window::Window(int width, int height, Color const & bg):
+Window::Window(int width, int height, Color const &bg):
     m_width(width), m_height(height), m_bgColor(bg)
 {
 }

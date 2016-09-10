@@ -1,5 +1,5 @@
-#ifndef SCENE_H
-#define SCENE_H
+#ifndef DISPLAY3R_SCENE_H
+#define DISPLAY3R_SCENE_H
 #include <SDL.h>
 #include <memory>
 
@@ -7,8 +7,6 @@
 #include "display3r/Solid.hpp"
 #include "display3r/Camera.hpp"
 #include "display3r/Light.hpp"
-
-#include <boost/exception/all.hpp>
 
 namespace display3r {
 
@@ -54,5 +52,5 @@ private:
 
 }; // end namespace display3r
 
-#endif // SCENE_H
+#endif // DISPLAY3R_SCENE_H
 

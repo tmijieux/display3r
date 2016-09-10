@@ -1,5 +1,5 @@
-#ifndef EXCEPTION_H
-#define EXCEPTION_H
+#ifndef DISPLAY3R_EXCEPTION_H
+#define DISPLAY3R_EXCEPTION_H
 
 #include <exception>
 #include <string>
@@ -19,4 +19,4 @@ private:
 };
 
 };
-#endif //EXCEPTION_H
+#endif //DISPLAY3R_EXCEPTION_H

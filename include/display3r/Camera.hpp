@@ -1,5 +1,5 @@
-#ifndef CAMERA_H
-#define CAMERA_H
+#ifndef DISPLAY3R_CAMERA_H
+#define DISPLAY3R_CAMERA_H
 
 #include <glm/glm.hpp>
 #include <vector>
@@ -46,4 +46,4 @@ private:
 };
 
 };
-#endif //CAMERA_H
+#endif //DISPLAY3R_CAMERA_H

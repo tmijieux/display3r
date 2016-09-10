@@ -1,5 +1,5 @@
-#ifndef FRAME_H
-#define FRAME_H
+#ifndef DISPLAY3R_FRAME_H
+#define DISPLAY3R_FRAME_H
 
 #include <glm/glm.hpp>
 
@@ -40,4 +40,4 @@ protected:
 
 };
 
-#endif // FRAME_H
+#endif // DISPLAY3R_FRAME_H

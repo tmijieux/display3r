@@ -1,5 +1,5 @@
-#ifndef SOLID_H
-#define SOLID_H
+#ifndef DISPLAY3R_SOLID_H
+#define DISPLAY3R_SOLID_H
 
 #include <SDL.h>
 #include <string>
@@ -54,4 +54,4 @@ private:
 
 };
 
-#endif //SOLID_H
+#endif //DISPLAY3R_SOLID_H

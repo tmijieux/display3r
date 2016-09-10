@@ -1,5 +1,5 @@
-#ifndef LIGHT_H
-#define LIGHT_H
+#ifndef DISPLAY3R_LIGHT_H
+#define DISPLAY3R_LIGHT_H
 
 #include <glm/glm.hpp>
 #include "display3r/Color.hpp"
@@ -26,4 +26,4 @@ private:
 };
 
 };
-#endif //LIGHT_H
+#endif //DISPLAY3R_LIGHT_H

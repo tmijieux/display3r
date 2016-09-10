@@ -1,5 +1,5 @@
-#ifndef EQUATION_H
-#define EQUATION_H
+#ifndef DISPLAY3R_EQUATION_H
+#define DISPLAY3R_EQUATION_H
 
 #include <string>
 #include <vector>
@@ -56,4 +56,4 @@ public:
     // float getValue(Tree tr, float s, float t);
 };
 
-#endif //EQUATION_H
+#endif //DISPLAY3R_EQUATION_H

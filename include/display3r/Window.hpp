@@ -1,5 +1,5 @@
-#ifndef WINDOW_H
-#define WINDOW_H
+#ifndef DISPLAY3R_WINDOW_H
+#define DISPLAY3R_WINDOW_H
 
 #include <SDL.h>
 #include <glm/glm.hpp>
@@ -31,7 +31,6 @@ public:
     virtual bool PollEvent(Event &) = 0;
 
     bool HandleEvents(Scene &scene, Renderer &renderer);
-
     static Window *MakeWindow(Config const&);
 
 protected:
@@ -100,4 +99,4 @@ struct Event {
 
 }; // end namespace display3r
 
-#endif //WINDOW_H
+#endif //DISPLAY3R_WINDOW_H

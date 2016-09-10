@@ -1,5 +1,5 @@
-#ifndef COLOR_H
-#define COLOR_H
+#ifndef DISPLAY3R_COLOR_H
+#define DISPLAY3R_COLOR_H
 
 #include <cstdint>
 #include <string>
@@ -48,4 +48,4 @@ static inline ostream &operator<<(ostream &s, display3r::Color const &c)
 }
 
 };
-#endif // COLOR_H
+#endif // DISPLAY3R_COLOR_H

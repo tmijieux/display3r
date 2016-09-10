@@ -1,5 +1,5 @@
-#ifndef UTIL_H
-#define UTIL_H
+#ifndef DISPLAY3R_UTIL_H
+#define DISPLAY3R_UTIL_H
 
 #include <glm/glm.hpp>
 #include <iostream>
@@ -41,4 +41,4 @@ static inline ostream &operator<<(ostream &s, vec2 const &v)
 };
 
 
-#endif //UTIL_H
+#endif //DISPLAY3R_UTIL_H

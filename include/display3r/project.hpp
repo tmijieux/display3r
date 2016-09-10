@@ -1,5 +1,5 @@
-#ifndef PROJECT_H
-#define PROJECT_H
+#ifndef DISPLAY3R_PROJECT_H
+#define DISPLAY3R_PROJECT_H
 
 #include <glm/glm.hpp>
 #include <SDL.h>
@@ -28,4 +28,4 @@ void ProjectFace(Face const &F);
 
 };
 
-#endif //PROJECT_H
+#endif //DISPLAY3R_PROJECT_H
