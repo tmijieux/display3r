@@ -16,13 +16,14 @@ public:
     Texture(std::string const &filename);
     ~Texture();
     static Texture *LoadTexture(std::string const &filename);
-    Color GetColor(ivec2 P);
+    Color GetColor(vec2 const &P);
 
 private:
     SDL_Surface *m_surface;
     int m_width;
     int m_height;
-    uint32_t const *GetPixelPointer(ivec2 P);
+    int m_bpp;
+    int m_pitch;
 };
 
 

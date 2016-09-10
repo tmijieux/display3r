@@ -7,25 +7,23 @@
 #include "display3r/Exception.hpp"
 #include "display3r/Renderer.hpp"
 
-using std::string;
-using std::ifstream;
-using std::vector;
+using namespace std;
 using display3r::Solid;
 using display3r::Vertex;
 using display3r::Face;
 
 namespace display3r {
 
-static inline double strtod(std::string const &s)
+static inline double strtod(string const &s)
 {
-    std::istringstream istr(s);
+    istringstream istr(s);
     double d;
 
-    istr.imbue(std::locale("C"));
+    istr.imbue(locale("C"));
     istr >> d;
     return d;
 }
-static inline int atoi(std::string const &s)
+static inline int atoi(string const &s)
 {
     return ::atoi(s.c_str());
 }
@@ -35,11 +33,11 @@ static inline int atoi(std::string const &s)
 void Solid::ParseVertex(vector<string> const &s, vector<vec3> &vertex)
 {
     vec3 v;
-    if (s.size() != 3)
+    if (s.size() != 4)
         throw exception("invalid vertex");
-    v.x = strtod(s[0]);
-    v.y = strtod(s[1]);
-    v.z = strtod(s[2]);
+    v.x = strtod(s[1]);
+    v.y = strtod(s[2]);
+    v.z = strtod(s[3]);
 
     vertex.push_back(v);
 }
@@ -47,11 +45,11 @@ void Solid::ParseVertex(vector<string> const &s, vector<vec3> &vertex)
 void Solid::ParseNormal(vector<string> const &s, vector<vec3> &normal)
 {
     vec3 n;
-    if (s.size() != 2)
+    if (s.size() != 4)
         throw exception("invalid normal");
-    n.x = strtod(s[0]);
-    n.y = strtod(s[1]);
-    n.z = strtod(s[2]);
+    n.x = strtod(s[1]);
+    n.y = strtod(s[2]);
+    n.z = strtod(s[3]);
 
     normal.push_back(n);
 }
@@ -61,8 +59,8 @@ void Solid::ParseTexCoord(vector<string> const &s, vector<vec2> &texcoord)
     vec2 t;
     if (s.size() != 3)
         throw exception("invalid texcoord");
-    t.x = strtod(s[0]);
-    t.y = strtod(s[1]);
+    t.x = strtod(s[1]);
+    t.y = strtod(s[2]);
 
     texcoord.push_back(t);
 }
@@ -93,17 +91,17 @@ void Solid::ParseFace(vector<string> const &s,
                       vector<vec3>const &n/*ormal*/,
                       vector<vec2>const &t/*excoord*/)
 {
-    if (s.size() < 3)
+    if (s.size() < 4)
         throw exception("invalid face");
 
-    Face f(ParseVertexIndex(s[0], v, n, t),
-           ParseVertexIndex(s[1], v, n, t),
-           ParseVertexIndex(s[2], v, n, t));
+    Face f(ParseVertexIndex(s[1], v, n, t),
+           ParseVertexIndex(s[2], v, n, t),
+           ParseVertexIndex(s[3], v, n, t));
     m_faces.push_back(f);
 
     // triangle fan if more than 3 points:
     Vertex last = f.C;
-    for (unsigned i = 3; i < s.size(); ++i) {
+    for (unsigned i = 4; i < s.size(); ++i) {
         Face g(f.A, last, ParseVertexIndex(s[i], v, n, t));
         last = g.C;
         m_faces.push_back(g);
@@ -113,49 +111,68 @@ void Solid::ParseFace(vector<string> const &s,
 void Solid::LoadOBJ(ifstream &file)
 {
     m_faces.clear();
-    std::vector<vec3> normals;
-    std::vector<vec3> vertex;
-    std::vector<vec2> texcoords;
+    vector<vec3> normals;
+    vector<vec3> vertex;
+    vector<vec2> texcoords;
 
     string line;
+    int line_count = 1;
     while (getline(file, line)) {
         boost::trim(line);
         vector<string> s;
         boost::split(s, line, boost::is_any_of(" "));
         string const &type = s[0];
 
-	if (type == "v")
-            ParseVertex(s, vertex);
-	else if (type == "vn")
-            ParseNormal(s, normals);
-	else if (type == "vt")
-            ParseTexCoord(s, texcoords);
-        else if (type == "f")
-            ParseFace(s, vertex, normals, texcoords);
+        try {
+            if (type == "v")
+                ParseVertex(s, vertex);
+            else if (type == "vn")
+                ParseNormal(s, normals);
+            else if (type == "vt")
+                ParseTexCoord(s, texcoords);
+            else if (type == "f")
+                ParseFace(s, vertex, normals, texcoords);
+            else if (type == "o" && s.size() >= 2)
+                m_name = s[1];
+
+        } catch (exception &e) {
+            throw exception( string(e.what())+
+                             " line "+to_string(line_count));
+        }
+        ++ line_count;
     }
 }
 
 Solid::Solid(string filepath, Texture *texture):
-    m_texture(texture)
+    m_texture(texture), m_name("Unnamed")
 {
     ifstream f(filepath);
 
     if (!f.is_open())
-	throw exception(filepath+": "+strerror(errno)) ;
+	throw exception(filepath+": "+strerror(errno));
 
     LoadOBJ(f);
-    std::cout << "Solid "<< filepath << " successfully loaded" << std::endl;
+    cout << "Object " << filepath <<":"<<m_name<< " LOADED." << endl;
+    cout << "texture pointer" << texture << endl;
     f.close();
 }
 
 void Solid::DrawHandler(Renderer &renderer)
 {
+    renderer.BindTexture(m_texture);
     for (auto &f : m_faces)
         renderer.DrawFace(f);
+
+    renderer.BindTexture(NULL); // unbind texture
 }
 
 
-// Solid::Solid(Equation &eq, std::string texpath)
+Solid::Solid(Equation const&, Texture*)
+{
+    throw exception("equation loading not implemented, sorry");
+}
+
+// Solid::Solid(Equation &eq, string texpath)
 // {
 //     float minS, maxS, minT, maxT;
 //     int precisionS, precisionT;

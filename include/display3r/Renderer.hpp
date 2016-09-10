@@ -21,23 +21,13 @@ class Segment;
 class Pixel;
 class Line;
 class Triangle;
-
+class Config;
 class Window;
+class ZBuffer;
 };
 
 namespace display3r {
 
-class ZBuffer {
-public:
-    inline float &operator[](ivec2 i) { return m_buf[i.y*m_width + i.x]; }
-
-    void Clear();
-    void Resize(int width, int height);
-
-private:
-    int m_width;
-    std::vector<float> m_buf;
-};
 
 class Renderer {
 public:
@@ -52,7 +42,7 @@ public:
 
     };
 
-    Renderer(Window *window);
+    Renderer(Window *window, Color const &untextured);
 
     // 2D objects
     void DrawPixel(ivec2 const &P, float depth);
@@ -73,14 +63,11 @@ public:
                   vec2 const &U, vec2 const &V, vec2 const &W,
                   vec3 const &nA, vec3 const &nB, vec3 const &nC);
 
-    // Renderer State
-    void Clear(); // clear renderer internals (i.e Z-buffer)
-    void Resize(int width, int height);
 
     void BindTexture(Texture *texture);
     void BindLights(std::vector<Light> *lights);
 
-    void SetLens(Lens const*);
+    void SetLens(Lens *);
 
     void SetDrawState(DrawState drawState);
     void SetColor(Color const &drawColor);
@@ -106,14 +93,14 @@ private:
 
 private:
     Lens const *m_lens;
-    Frame m_camera;
+    Window *m_window;
 
+    Frame m_camera;
+    ZBuffer *m_zbuf;
     int m_width, m_height;
     float m_nearplan;
     float m_hfov, m_wfov;
 
-    ZBuffer m_zbuf;
-    Window *m_window;
     DrawState m_drawState;
     Color m_drawColor;
     Color m_untexturedColor;

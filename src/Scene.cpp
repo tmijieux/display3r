@@ -15,6 +15,8 @@
 #include "display3r/Renderer.hpp"
 
 using std::string;
+using std::cout;
+using std::endl;
 using display3r::Scene;
 using display3r::Frame;
 using display3r::Camera;
@@ -24,14 +26,24 @@ Scene::Scene(Config const &conf):
     m_camera(conf.SceneCamera, conf)
 {
     vector<string> lights;
-    lights = conf["scene.light"].as<vector<string> >();
-    for (auto &l : lights)
-        m_lights.push_back(Light(l, conf));
+    try {
+        lights = conf["scene.light"].as<vector<string> >();
+    } catch (std::exception &e) {
+        cout << "Exception scene: "  << e.what() << endl;
+    }
+    for (auto &l : lights) {
+        try {
+            cout << "Loading 'light."<<l<<"' ... ";
+            m_lights.push_back(Light(l, conf));
+            cout << "Success." << endl;
+        } catch (std::exception &e) {
+            cout << "ERROR!" << endl;
+        }
+    }
 }
 
 void Scene::AskSolid()
 {
-    Solid *solid;
     string objName;
     string bmpName;
 
@@ -42,12 +54,28 @@ void Scene::AskSolid()
     printf(".bmp path: ");
     getline(std::cin, bmpName);
 
-    m_solids.push_back(Solid(objName, Texture::LoadTexture(bmpName)));
+    try {
+        Texture *t = Texture::LoadTexture(bmpName);
+        m_solids.push_back(Solid(objName, t));
+    } catch (std::exception &e) {
+        cout << e.what() << endl;
+    }
+}
+
+void Scene::Clear()
+{
+    for (auto &l : m_camera.GetLenses())
+        l.Clear();
+}
+
+void Scene::NotifyResize(int width, int height)
+{
+    for (auto &l : m_camera.GetLenses())
+        l.Refresh(width, height);
 }
 
 void Scene::AskEquation()
 {
-    Solid *solid;
     string eqName;
     string bmpName;
 
@@ -58,8 +86,13 @@ void Scene::AskEquation()
     printf(".bmp path: ");
     getline(std::cin, bmpName);
 
-    Equation eq(eqName);
-    /* m_solids.push_back(Solid(eq, bmpName)); */
+    try {
+        Equation eq(eqName);
+        Texture *t = Texture::LoadTexture(bmpName);
+        m_solids.push_back(Solid(eq, t));
+    } catch (std::exception &e) {
+        cout << e.what() << endl;
+    }
 }
 
 void Scene::RemoveSolid()
@@ -74,10 +107,7 @@ void Scene::Draw(Renderer &renderer)
 
     for (auto &lens : m_camera.GetLenses())
     {
-        printf("have lens\n");
-
         renderer.SetLens(&lens);
-
         m_origin.Draw(renderer);
         for (auto &s : m_solids)
             s.Draw(renderer);
@@ -86,7 +116,6 @@ void Scene::Draw(Renderer &renderer)
 
 void Scene::HandleArgument(int argc, char *argv[])
 {
-    Solid *solid;
     switch (argc) {
     case 1:
 	break;

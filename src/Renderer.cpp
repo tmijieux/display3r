@@ -1,23 +1,23 @@
+#include <string>
 #include <tuple>
 #include <utility>
 
 #include "display3r/Renderer.hpp"
 #include "display3r/Window.hpp"
+#include "display3r/Color.hpp"
 
-using std::vector;
+using namespace std;
 using display3r::Renderer;
 using display3r::ZBuffer;
 
-Renderer::Renderer(Window *window):
-    m_lens(NULL), m_window(window), m_untexturedColor(0, 255, 255)
+Renderer::Renderer(Window *window, Color const &untextured):
+    m_lens(NULL),
+    m_window(window),
+    m_zbuf(NULL),
+    m_drawState(FACE),
+    m_drawColor(Color::BLUE),
+    m_untexturedColor(untextured)
 {
-    Resize(m_window->GetWidth(), m_window->GetHeight());
-}
-
-void Renderer::Clear()
-{
-    m_window->Clear();
-    m_zbuf.Clear();
 }
 
 void Renderer::BindTexture(Texture *texture)
@@ -30,30 +30,15 @@ void Renderer::BindLights(vector<Light> *lights)
     m_lights = lights;
 }
 
-void Renderer::Resize(int width, int height)
-{
-    m_zbuf.Resize(width, height);
-}
-
-void ZBuffer::Clear()
-{
-    union { int i; float f; } v = {.f = -1.0 };
-    memset(&m_buf[0], v.i, m_buf.size());
-}
-
-void ZBuffer::Resize(int width, int height)
-{
-    m_buf.resize(width*height);
-}
-
-void Renderer::SetLens(Lens const *lens)
+void Renderer::SetLens(Lens *lens)
 {
     m_lens = lens;
     m_nearplan = lens->GetNearPlan();
     m_width = lens->GetWindowWidth();
     m_height = lens->GetWindowHeight();
-    m_wfov = lens->GetHFov();
-    m_hfov = lens->GetWFov();
+    m_wfov = lens->GetWFov();
+    m_hfov = lens->GetHFov();
+    m_zbuf = lens->GetZBuffer();
 
     // lens->ConfigureZBuffer(m_zbuf);
 }
@@ -70,11 +55,11 @@ void Renderer::SetDrawState(Renderer::DrawState drawState)
 
 void Renderer::PushState()
 {
-    m_states.push(std::make_pair(m_drawState, m_drawColor));
+    m_states.push(make_pair(m_drawState, m_drawColor));
 }
 
 void Renderer::PopState()
 {
-    std::tie(m_drawState, m_drawColor) = m_states.top();
+    tie(m_drawState, m_drawColor) = m_states.top();
     m_states.pop();
 }

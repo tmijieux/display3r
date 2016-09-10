@@ -10,21 +10,30 @@ struct Renderer;
 
 };
 
-#include "display3r/Object.hpp"
+#include "display3r/Drawable.hpp"
 
 
 using namespace glm;
 namespace display3r {
 
-struct Frame : public Object  {
-    vec3 O, i, j, k;
+struct Frame : public Drawable  {
+
+    union {
+        vec3 O;
+        vec3 position;
+    };
+    vec3 i, j, k;
+
     Frame();
     Frame(vec3 const&);
 
     void Rotate(vec3 const &axis, float angle);
     void Translate(vec3 const &move);
     void Reset();
+
+
 protected:
+    virtual void OnMovement() {}
     void DrawHandler(Renderer &renderer) override;
 };
 

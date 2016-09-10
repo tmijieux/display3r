@@ -21,17 +21,17 @@ public:
     Color RendererUntextured;
 
     Config(int &argc, char **&argv);
-    
+
 private:
     std::set<std::string> m_backends;
     std::set<std::string> m_lenses;
     std::set<std::string> m_cameras;
     std::set<std::string> m_lights;
-    
+
     void ParseConfigFile(std::istream &ifs);
-    void AddOptionDescriptions(po::options_description&);
-
+    void AddConfigDescriptions(po::options_description&);
 };
 
 };
+
 #endif //CONFIG_H

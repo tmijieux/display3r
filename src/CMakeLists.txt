@@ -11,13 +11,14 @@ set(display3r_src
   main.cpp
   Window.cpp
   SDL_Window.cpp
-  Object.cpp
+  Drawable.cpp
   Texture.cpp
   Camera.cpp
   Config.cpp
   Lens.cpp
   Light.cpp
   Util.cpp
+  ZBuffer.cpp
   )
 
 

@@ -13,7 +13,7 @@ class Light {
 public:
     Light();
     Light(std::string const&, Config const&);
-    
+
     Color Compute(vec3 const &A, vec3 const &nA);
 
 private:

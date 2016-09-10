@@ -10,15 +10,17 @@ int main(int argc, char *argv[])
     Config conf(argc, argv);
     Window *window = Window::MakeWindow(conf);
     Scene scene(conf);
-    Renderer renderer(window);
+    Renderer renderer(window, conf.RendererUntextured);
     bool stop = false;
 
-    while (!stop) {
+    // needed for initializing lenses stuffs: (zbuffer/dimensons/angles)
+    scene.NotifyResize(window->GetWidth(), window->GetHeight());
 
-        renderer.Clear();
+    while (!stop) {
+        window->Clear();
+        scene.Clear();
         scene.Draw(renderer);
         window->Update();
-
         stop = window->HandleEvents(scene, renderer);
     }
 

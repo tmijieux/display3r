@@ -20,27 +20,23 @@ Color::Color():
 Color Color::operator*(float a) const
 {
     Color c;
-    c.r = r * a / 255.;
-    c.g = g * a / 255.;
-    c.b = b * a / 255;
+    c.r = r * a;
+    c.g = g * a;
+    c.b = b * a;
     return c;
 }
 
-Color Color::operator-(Color const &o) const
+static inline unsigned char sum(unsigned int a, unsigned int b)
 {
-    Color c;
-    c.r = MAX(0, r - o.r);
-    c.g = MAX(0, g - o.g);
-    c.b = MAX(0, b - o.b);
-    return c;
+    return MIN(255, a+b);
 }
 
 Color Color::operator+(Color const &o) const
 {
     Color c;
-    c.r = MIN(255, r + o.r);
-    c.g = MIN(255, g + o.g);
-    c.b = MIN(255, b + o.b);
+    c.r = sum(r, o.r);
+    c.g = sum(g, o.g);
+    c.b = sum(b, o.b);
     return c;
 }
 
@@ -52,12 +48,18 @@ void Color::Filter(Color const &o)
     b = b * o.b / 255.;
 }
 
+static inline unsigned char prod(unsigned int a, unsigned int b)
+{
+    return a * b / 255;
+}
+
 Color Color::operator*(Color const &o) const
 {
     Color c;
-    c.r = (unsigned)r * (unsigned)o.r / 255;
-    c.g = (unsigned)g * (unsigned)o.g / 255;
-    c.b = (unsigned)b * (unsigned)o.b / 255;
+    c.r = prod(r, o.r);
+    c.g = prod(g, o.g);
+    c.b = prod(b, o.b);
+    return c;
 }
 
 void Color::Average(Color const &o, unsigned char scale)
@@ -72,7 +74,10 @@ Color Color::FromString(std::string const &s)
     Color c;
     std::stringstream ss(s);
     ss.imbue(std::locale("C"));
-    ss >> c.r >> c.g >> c.b;
+    int r, g, b;
+    ss >> r >> g >> b;
+    c.r = r; c.g = g; c.b = b;
+
     return c;
 }
 
@@ -82,9 +87,9 @@ Color Interpolate(Color const &A, Color const &B, Color const &C,
                   float a, float b, float c)
 {
     Color d;
-    d.r = a*A.r+b*B.r+c*C.r;
-    d.g = a*A.g+b*B.g+c*C.g;
-    d.b = a*A.b+b*B.b+c*C.b;
+    d.r = a*A.r + b*B.r + c*C.r;
+    d.g = a*A.g + b*B.g + c*C.g;
+    d.b = a*A.b + b*B.b + c*C.b;
     return d;
 }
 

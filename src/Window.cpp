@@ -1,20 +1,16 @@
+#include <iostream>
 #include "display3r/Window.hpp"
 #include "display3r/Scene.hpp"
 #include "display3r/Renderer.hpp"
 #include "display3r/Config.hpp"
 
+using namespace std;
 using display3r::Window;
 using display3r::Renderer;
 
 Window::Window(int width, int height, Color const & bg):
     m_width(width), m_height(height), m_bgColor(bg)
 {
-
-}
-
-bool Window::IsValidCoordinate(ivec2 const &c)
-{
-    return ((c.y >= 0) && (c.y < m_height) && c.x >= 0 && c.x < m_width);
 }
 
 bool Window::HandleEvents(Scene &scene, Renderer &renderer)
@@ -37,7 +33,7 @@ bool Window::HandleEvents(Scene &scene, Renderer &renderer)
             renderer.SetDrawState(event.drawState);
             break;
         case Event::RESIZE:
-            renderer.Resize(event.width, event.height);
+            scene.NotifyResize(event.width, event.height);
             break;
         case Event::HIDE_FRAME:
             scene.ToggleFrame();

@@ -1,4 +1,5 @@
-#include <math.h>
+#include <cmath>
+#include <iostream>
 
 #include "display3r/Color.hpp"
 #include "display3r/Renderer.hpp"
@@ -6,6 +7,7 @@
 #include "display3r/Object3D.hpp"
 #include "display3r/Object2D.hpp"
 
+using namespace std;
 using display3r::Renderer;
 using display3r::Color;
 
@@ -15,7 +17,7 @@ vec3 Renderer::ProjectPoint(const vec3& A, const vec3& B)
 {
     vec3 AB = B - A;
     vec3 d = A - m_lens->O;
-    float k = m_nearplan - dot(m_lens->j, d) / dot(m_lens->j, AB);
+    float k = (m_nearplan - dot(m_lens->j, d)) / dot(m_lens->j, AB);
     return A+AB*k - m_lens->O;
 }
 
@@ -23,15 +25,12 @@ vec3 Renderer::ProjectPoint(const vec3& A, const vec3& B)
 // and A, knowing the depth of A
 vec2 Renderer::ProjectCoord(vec3 const& OA, float depth)
 {
-    int height = m_window->GetHeight();
-    int width = m_window->GetWidth();
-
     return vec2(
-        width/(2.*tan(m_wfov * M_PI / 360.))
-        * dot(m_lens->i, OA) / depth + width / 2,
+        m_width/(2.*tan(m_hfov / 2.)) *
+        dot(m_lens->i, OA) / depth + m_width / 2,
 
-        -height/(2.*tan(m_hfov * M_PI / 360.))
-        * dot(m_lens->k, OA) / depth + height / 2);
+        -m_height/(2.*tan(m_wfov / 2.)) *
+        dot(m_lens->k, OA) / depth + m_height / 2);
 }
 
 void Renderer::DrawVertex(Vertex const &V)
@@ -157,7 +156,7 @@ void Renderer::DrawTwoSubFaces(
     Color lBn = ComputeLight(OpB, nAB);
     Color lCn = ComputeLight(OpC, nAC);
 
-    Pixel pCn(opbn, (dC - dA)*kC + dA, lCn, WU);
+    Pixel pCn(opcn, (dC - dA)*kC + dA, lCn, WU);
     Pixel pBn(opbn, (dB - dA)*kB + dA, lBn, VU);
     Pixel pC(c, dC, lC, W);
     Pixel pB(b, dB, lB, V);

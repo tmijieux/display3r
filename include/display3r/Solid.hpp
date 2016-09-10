@@ -10,7 +10,7 @@ namespace display3r { class Solid; }
 
 #include "display3r/Object3D.hpp"
 #include "display3r/Color.hpp"
-#include "display3r/Object.hpp"
+#include "display3r/Drawable.hpp"
 #include "display3r/Texture.hpp"
 #include "display3r/Equation.hpp"
 
@@ -23,10 +23,10 @@ using std::string;
 using std::ifstream;
 using std::vector;
 
-class Solid : public Object {
+class Solid : public Drawable {
 public:
     Solid(string filepath, Texture*);
-/*    Solid(Equation const&, Texture); */
+    Solid(Equation const&, Texture*);
 
 private:
     void DrawHandler(Renderer &renderer) override;
@@ -47,9 +47,9 @@ private:
                    vector<vec3>const &n/*ormal*/,
                    vector<vec2>const &t/*excoord*/);
 
-
-    std::vector<Face> m_faces;
+    vector<Face> m_faces;
     Texture *m_texture;
+    string m_name;
 };
 
 };

@@ -28,15 +28,19 @@ class Camera : public Frame {
 public:
     Camera();
     Camera(std::string const &name, Config const &conf);
-    
+
     void Rotate(Direction);
     void Translate(Direction);
-    std::vector<Lens> const &GetLenses();
+    std::vector<Lens> &GetLenses();
 
 protected:
+    void OnMovement() override;
+    void DrawHandler(Renderer&) override {/*i'm invisible!*/}
+
     float theta, phi, rho;
     float vspeed;
     float rspeed;
+
 private:
     std::vector<Lens> m_lenses;
 };

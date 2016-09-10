@@ -2,40 +2,52 @@
 #include <string>
 
 #include "display3r/Texture.hpp"
+#include "display3r/Exception.hpp"
+#include "display3r/Util.hpp"
 
-using std::string;
+using namespace std;
 using display3r::Texture;
 using display3r::Color;
 
-
-Texture *Texture::LoadTexture(std::string const&filename)
+Texture *Texture::LoadTexture(std::string const &filename)
 {
-    return new Texture(filename);
-}
+    if (filename == "")
+        return NULL;
 
+    Texture *texture = NULL;
+    try {
+        texture = new Texture(filename);
+    } catch (std::exception &e) {
+        cout << "Cannot load Texture '"<< filename <<"'." << endl;
+        cout << "'" << e.what() << "'" << endl;
+        return NULL;
+    }
+    return  texture;
+}
 
 Texture::Texture(string const &filename):
     m_surface(NULL)
 {
     m_surface = SDL_LoadBMP(filename.c_str());
     if (m_surface == NULL)
-	std::cerr <<  SDL_GetError() << std::endl;
-    else
-	std::cout << "Texture successfully loaded" << std::endl;
+	throw display3r::exception(SDL_GetError());
 
-    m_width = m_surface->format->BitsPerPixel/8 * m_surface->w;
+    m_width = m_surface->w;
     m_height = m_surface->h;
+    m_bpp = (int)m_surface->format->BytesPerPixel;
+    m_pitch = (int)m_surface->pitch;
+    cout << "Pitch: " << (int)m_pitch << endl;
 }
 
-uint32_t const *Texture::GetPixelPointer(ivec2 P)
-{
-    return ((uint32_t*)m_surface->pixels) + P.x*m_width + P.y*m_height*m_width;
-}
-
-Color Texture::GetColor(ivec2 P)
+Color Texture::GetColor(vec2 const &P)
 {
     Color c;
-    uint32_t const *p = GetPixelPointer(P);
-    SDL_GetRGB(*p, m_surface->format, &c.r, &c.g, &c.b);
+    uint32_t const *p;
+    p = (uint32_t*)((char*)m_surface->pixels +
+                    (int)(P.x*m_width)*m_bpp + (int)(P.y*m_height)*m_pitch);
+    uint32_t v = 0;
+    memcpy(&v, p , m_bpp);
+    SDL_GetRGB(v, m_surface->format, &c.r, &c.g, &c.b);
+
     return c;
 }

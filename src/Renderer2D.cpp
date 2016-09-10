@@ -1,5 +1,6 @@
+#include <iostream>
+#include <cmath>
 #include <SDL.h>
-#include <math.h>
 
 #include "display3r/Color.hpp"
 #include "display3r/Renderer.hpp"
@@ -11,12 +12,13 @@ using display3r::Color;
 using display3r::Pixel;
 using display3r::Line;
 using display3r::Triangle;
+using namespace std;
 
 namespace display3r {
 
 static inline int triple(ivec2 a, ivec2 b)
 {
-    return a.x*b.y-a.y*b.x;
+    return a.y*b.x-a.x*b.y;
 }
 
 static inline void loopFLoat(float &f)
@@ -50,11 +52,11 @@ void Renderer::DrawLexel(ivec2 P, Color color)
 
 void Renderer::DrawPixel(ivec2 const &P, float depth)
 {
-    if (m_window->IsValidCoordinate(P) &&
-        (m_zbuf[P] < m_nearplan || m_zbuf[P] > depth))
+    if (m_lens->IsValidCoordinate(P) &&
+        ((*m_zbuf)[P] < m_nearplan || (*m_zbuf)[P] > depth))
     {
         DrawLexel(P, m_drawColor);
-        m_zbuf[P] = depth;
+        (*m_zbuf)[P] = depth;
     }
 }
 
@@ -130,20 +132,22 @@ void Renderer::DrawTriangle(Pixel const &A, Pixel const &B, Pixel const &C)
     int maxH = MIN(m_height - 1, MAX(MAX(A.pos.y, B.pos.y), C.pos.y));
 
     float dABC = A.depth * B.depth * C.depth;
-
     float dAB = A.depth * B.depth;
     float dBC = B.depth * C.depth;
     float dCA = C.depth * A.depth;
 
     vec2 u, v, w;
-    if (m_texture) {
-        u = A.texcoord * (1.f / A.depth);
-        v = B.texcoord * (1.f / B.depth);
-        w = C.texcoord * (1.f / C.depth);
+    if (m_texture != NULL) {
+        u = A.texcoord / A.depth;
+        v = B.texcoord / B.depth;
+        w = C.texcoord / C.depth;
     }
 
     int det = triple(CA, AB);
     ivec2 M;
+    cout << "A.light: " << A.light << endl;
+    cout << "B.light: " << B.light << endl;
+    cout << "C.light: " << C.light << endl;
 
     for (M.y = minH; M.y <= maxH; ++M.y) {
 	ivec2 AM, BM, CM;
@@ -164,30 +168,30 @@ void Renderer::DrawTriangle(Pixel const &A, Pixel const &B, Pixel const &C)
 	       (PAlpha = triple(BC, BM)) >= 0 &&
 	       (PBeta = triple(CA, CM)) >= 0 &&
 	       (PGamma = triple(AB, AM)) >= 0)
+            // MACHINE GUN!! (pour reprendre les termes de Romain)
         {
 	    float alpha = (float) PAlpha / (float) det;
 	    float beta = (float) PBeta / (float) det;
 	    float gamma = (float) PGamma / (float) det;
+	    float depthM = dABC / (alpha * dBC + beta * dCA + gamma * dAB);
 
-	    float depthM = dABC /
-                (alpha * dBC + beta * dCA + gamma * dAB);
-
-	    if (m_zbuf[M] < m_nearplan || m_zbuf[M] > depthM)
+	    if ((*m_zbuf)[M] < m_nearplan || (*m_zbuf)[M] > depthM)
             {
 		Color c, colorM;
-                colorM = Interpolate(A.light, B.light, C.light, alpha, beta, gamma);
+                colorM = Interpolate(
+                    A.light, B.light, C.light, alpha, beta, gamma);
 
-		if (m_texture) {
+		if (m_texture != NULL) {
 		    float d;
                     d = (alpha / A.depth + beta / B.depth + gamma / C.depth);
-		    vec2 N = (u * alpha + v * beta + w * gamma) * (1.f / d);
+		    vec2 N = (u * alpha + v * beta + w * gamma) / d;
 		    TexCoordLoop(N);
 		    c = m_texture->GetColor(N);
 		} else
 		    c = m_untexturedColor;
                 c = colorM * c;
 		DrawLexel(M, c);
-		m_zbuf[M] = depthM;
+		(*m_zbuf)[M] = depthM;
 	    }
 	    M.x++;
             AM = M - A.pos;

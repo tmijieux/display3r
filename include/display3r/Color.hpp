@@ -3,6 +3,7 @@
 
 #include <cstdint>
 #include <string>
+#include <ostream>
 
 namespace display3r {
 
@@ -16,13 +17,13 @@ struct Color {
     uint8_t r;
     uint8_t g;
     uint8_t b;
+
     Color();
     Color(uint8_t r, uint8_t g, uint8_t b);
 
     Color operator*(float a) const;
 
     Color operator+(Color const &C) const;
-    Color operator-(Color const &C) const;
     Color operator*(Color const &C) const;
 
     void Filter(Color const &o);
@@ -34,6 +35,17 @@ struct Color {
 
 Color Interpolate(Color const &A, Color const &B, Color const &C,
                   float a, float b, float c);
+
+};
+
+
+namespace std {
+
+static inline ostream &operator<<(ostream &s, display3r::Color const &c)
+{
+    s << (int)c.r << " " << (int)c.g << " " << (int)c.b;
+    return s;
+}
 
 };
 #endif // COLOR_H

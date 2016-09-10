@@ -8,6 +8,8 @@
 #include "display3r/Camera.hpp"
 #include "display3r/Light.hpp"
 
+#include <boost/exception/all.hpp>
+
 namespace display3r {
 
 class Config;
@@ -30,6 +32,8 @@ public:
     void AskSolid();
     void RemoveSolid();
     void AskEquation();
+    void Clear();
+    void NotifyResize(int width, int height);
 
     void Draw(Renderer &renderer);
     void HandleArgument(int argc, char *argv[]);

@@ -11,7 +11,7 @@
 
 class Equation {
 public:
-    Equation(std::string eqpath_) {}
+    Equation(std::string) {}
 
     // static int analyseBinaryOperator(char *xyz, int *i);
     // static int initEquation(float *minS, float *maxS, int *precisionS,

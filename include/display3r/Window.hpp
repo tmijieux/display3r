@@ -17,8 +17,11 @@ struct Event;
 
 class Window {
 public:
+    inline bool IsValidCoordinate(ivec2 const &c)
+    {
+        return ((c.y >= 0) && (c.y < m_height) && c.x >= 0 && c.x < m_width);
+    }
 
-    bool IsValidCoordinate(ivec2 const& coord);
     virtual void SetPixel(ivec2 const &coord, Color const &color) = 0;
     virtual Color GetPixel(ivec2 const &coord) = 0;
     virtual int GetWidth() = 0;
@@ -32,7 +35,9 @@ public:
     static Window *MakeWindow(Config const&);
 
 protected:
-    Window(int window, int height, Color const & bg);
+    Window(int window, int height, Color const &backgroundColor);
+    Window(Config const &conf);
+
     int m_width, m_height;
     Color m_bgColor;
 };
