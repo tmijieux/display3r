@@ -34,13 +34,12 @@ void Renderer::SetLens(Lens *lens)
 {
     m_lens = lens;
     m_nearplan = lens->GetNearPlan();
+    m_farplan = lens->GetFarPlan();
     m_width = lens->GetWindowWidth();
     m_height = lens->GetWindowHeight();
     m_wfov = lens->GetWFov();
     m_hfov = lens->GetHFov();
     m_zbuf = lens->GetZBuffer();
-
-    // lens->ConfigureZBuffer(m_zbuf);
 }
 
 void Renderer::SetColor(Color const &drawColor)
@@ -51,6 +50,11 @@ void Renderer::SetColor(Color const &drawColor)
 void Renderer::SetDrawState(Renderer::DrawState drawState)
 {
     m_drawState = drawState;
+}
+
+void Renderer::ToggleDrawState(Renderer::DrawState drawState)
+{
+    m_drawState = (DrawState)(m_drawState ^ drawState); // toggle the draw state
 }
 
 void Renderer::PushState()

@@ -9,11 +9,11 @@ namespace display3r { class Camera; }
 
 #include "display3r/Frame.hpp"
 #include "display3r/Lens.hpp"
-#include "display3r/Config.hpp"
 
 using namespace glm;
 
 namespace display3r {
+class Config;
 
 enum Direction {
     UP,

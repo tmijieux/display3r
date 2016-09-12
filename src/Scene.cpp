@@ -26,11 +26,8 @@ Scene::Scene(Config const &conf):
     m_camera(conf.SceneCamera, conf)
 {
     vector<string> lights;
-    try {
-        lights = conf["scene.light"].as<vector<string> >();
-    } catch (std::exception &e) {
-        cout << "Exception scene: "  << e.what() << endl;
-    }
+    lights = conf["scene.light"].as<vector<string> >();
+
     for (auto &l : lights) {
         try {
             cout << "Loading 'light."<<l<<"' ... ";

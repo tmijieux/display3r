@@ -23,12 +23,11 @@ vec3 Renderer::ProjectPoint(const vec3& A, const vec3& B)
 
 // return the Coord projection of a vector between scene.camera.O
 // and A, knowing the depth of A
-vec2 Renderer::ProjectCoord(vec3 const& OA, float depth)
+ivec2 Renderer::ProjectCoord(vec3 const& OA, float depth)
 {
-    return vec2(
+    return ivec2(
         m_width/(2.*tan(m_hfov / 2.)) *
         dot(m_lens->i, OA) / depth + m_width / 2,
-
         -m_height/(2.*tan(m_wfov / 2.)) *
         dot(m_lens->k, OA) / depth + m_height / 2);
 }
@@ -42,7 +41,7 @@ void Renderer::DrawVertex(vec3 const& A)
 {
     vec3 OA = A - m_lens->O;
     float depthA = dot(m_lens->j, OA);
-    vec2 p = ProjectCoord(OA, depthA);
+    ivec2 p = ProjectCoord(OA, depthA);
 
     if (depthA > m_nearplan)
 	DrawPixel(p, depthA);
@@ -78,7 +77,6 @@ void Renderer::DrawSegment(vec3 const &A, vec3 const &B)
     DrawLine(t, u, depthA, depthB);
 }
 
-
 void Renderer::DrawFace(Face const &f)
 {
     DrawFace(f.A.position, f.B.position, f.C.position,
@@ -90,7 +88,17 @@ void Renderer::DrawFace(vec3 const &A, vec3 const &B, vec3 const &C,
                         vec2 const &U, vec2 const &V, vec2 const &W,
                         vec3 const &nA, vec3 const &nB, vec3 const &nC)
 {
-    vec3 O = m_lens->O;
+    if (m_drawState & Renderer::NORMAL) {
+        PushState();
+        m_drawColor = Color::GREEN;
+        m_drawState = (Renderer::DrawState) 0;
+        DrawSegment(A, A+nA*0.1f);
+        DrawSegment(B, B+nB*0.1f);
+        DrawSegment(C, C+nC*0.1f);
+        PopState();
+    }
+
+    vec3 const &O = m_lens->O;
     vec3 OA = A - O;
     vec3 OB = B - O;
     vec3 OC = C - O;
@@ -108,7 +116,7 @@ void Renderer::DrawFace(vec3 const &A, vec3 const &B, vec3 const &C,
 
 	DrawTriangle(Pixel(a, dA, lA, U),
                      Pixel(b, dB, lB, V),
-                     Pixel(c, dB, lC, W));
+                     Pixel(c, dC, lC, W));
 
     } else if (dB > m_nearplan && dC > m_nearplan)
         DrawTwoSubFaces(A, B, C, dA, dB, dC, OB, OC, U, V, W, nA, nB, nC);
@@ -156,10 +164,11 @@ void Renderer::DrawTwoSubFaces(
     Color lBn = ComputeLight(OpB, nAB);
     Color lCn = ComputeLight(OpC, nAC);
 
-    Pixel pCn(opcn, (dC - dA)*kC + dA, lCn, WU);
-    Pixel pBn(opbn, (dB - dA)*kB + dA, lBn, VU);
-    Pixel pC(c, dC, lC, W);
     Pixel pB(b, dB, lB, V);
+    Pixel pC(c, dC, lC, W);
+    Pixel pBn(opbn, (dB - dA)*kB + dA, lBn, VU);
+    Pixel pCn(opcn, (dC - dA)*kC + dA, lCn, WU);
+
     DrawTriangle(pBn, pC, pCn);
     DrawTriangle(pBn, pB, pC);
 }

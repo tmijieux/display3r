@@ -35,8 +35,6 @@ void Frame::DrawHandler(Renderer &renderer)
     Color color;
 
     renderer.PushState();
-    renderer.SetDrawState(Renderer::DrawState::WIREFRAME);
-
     renderer.SetColor(Color::RED);
     renderer.DrawSegment(O, i);
 
@@ -45,7 +43,6 @@ void Frame::DrawHandler(Renderer &renderer)
 
     renderer.SetColor(Color::BLUE);
     renderer.DrawSegment(O, k);
-
     renderer.PopState();
 }
 

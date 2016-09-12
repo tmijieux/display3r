@@ -61,6 +61,7 @@ void Solid::ParseTexCoord(vector<string> const &s, vector<vec2> &texcoord)
         throw exception("invalid texcoord");
     t.x = strtod(s[1]);
     t.y = strtod(s[2]);
+    t.y = 1 - t.y;
 
     texcoord.push_back(t);
 }

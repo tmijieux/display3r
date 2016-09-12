@@ -1,26 +1,37 @@
+#include <string>
 #include <SDL.h>
+
 #include "display3r/Window.hpp"
-#include "display3r/Scene.hpp"
-#include "display3r/Renderer.hpp"
 #include "display3r/Exception.hpp"
+#include "display3r/PluginDetails.hpp"
+#include "display3r/Camera.hpp" // for directions
+#include "display3r/SDL/backend_SDL.hpp"
 
-namespace display3r {
+DISPLAY3R_PLUGIN(backend_SDL_factory, "SDL window backend", "0.1");
 
-bool SDL_Window::SDL_Inited = false;
+using namespace display3r;
+using std::string;
+using std::cout;
+using std::endl;
 
-int SDL_Window::GetWidth()
+bool backend_SDL_factory::SDL_Inited = false;
+
+display3r::Window *
+backend_SDL_factory::MakeWindow(int width, int height, Color c)
 {
-    SDL_GetWindowSize(m_window, &m_width, &m_height);
-    return m_width;
+    display3r::Window *w = NULL;
+
+    try {
+        InitSDLOnce();
+        w = new backend_SDL(width, height, c);
+    } catch (exception &e) {
+        cout << e.what() << endl;
+        return NULL;
+    }
+    return w;
 }
 
-int SDL_Window::GetHeight()
-{
-    SDL_GetWindowSize(m_window, &m_width, &m_height);
-    return m_height;
-}
-
-void SDL_Window::InitSDLOnce()
+void backend_SDL_factory::InitSDLOnce()
 {
     if (SDL_Inited)
         return;
@@ -30,47 +41,70 @@ void SDL_Window::InitSDLOnce()
     SDL_Inited = true;
 }
 
-void SDL_Window::Clear()
+
+/* --- */
+
+int backend_SDL::GetWidth()
+{
+    SDL_GetWindowSize(m_window, &m_width, &m_height);
+    return m_width;
+}
+
+int backend_SDL::GetHeight()
+{
+    SDL_GetWindowSize(m_window, &m_width, &m_height);
+    return m_height;
+}
+
+void backend_SDL::Clear()
 {
     SDL_SetRenderDrawColor(m_renderer, m_bgColor.r, m_bgColor.g, m_bgColor.b, 255);
     SDL_RenderClear(m_renderer);
+    // uint32_t pixel;
+    // pixel = m_bgColor.r << 24 | m_bgColor.g << 16 | m_bgColor.b << 8;
+    // std::fill(m_softSurface.begin(), m_softSurface.end(), pixel);
 }
 
-void SDL_Window::Update()
+void backend_SDL::Update()
 {
+    // SDL_UpdateTexture(m_texture, NULL, (void*) &m_softSurface[0],
+    //                   sizeof m_softSurface[0] * m_width);
+    // SDL_RenderClear(m_renderer);
+    // SDL_RenderCopy(m_renderer, m_texture, NULL, NULL);
     SDL_RenderPresent(m_renderer);
 }
 
-void SDL_Window::SetPixel(ivec2 const &coord, Color const &c)
+void backend_SDL::SetPixel(ivec2 const &coord, Color const &c)
 {
     SDL_SetRenderDrawColor(m_renderer, c.r, c.g, c.b, 255);
     SDL_RenderDrawPoint(m_renderer, coord.x, coord.y);
+    // uint32_t pixel = c.r << 24 | c.g << 16 | c.b << 8;
+    // m_softSurface[coord.y*m_width+coord.x] = pixel;
 }
 
-Color SDL_Window::GetPixel(ivec2 const & coord)
+Color backend_SDL::GetPixel(ivec2 const & coord)
 {
     Color c;
     SDL_Rect rect;
     uint32_t pixel;
-
     rect.x = coord.x; rect.y = coord.y;
     rect.w = 1; rect.h = 1;
-
     SDL_RenderReadPixels(m_renderer, &rect, SDL_PIXELFORMAT_RGBA8888, &pixel, 0);
 
+    // Color c;
+    // uint32_t pixel;
+    // pixel = m_softSurface[coord.y*m_width+coord.x];
     c.r = (pixel >> 24) & 0xFF;
     c.g = (pixel >> 16) & 0xFF;
     c.b = (pixel >> 8) & 0xFF;
     return c;
 }
 
-SDL_Window::SDL_Window(int width, int height, Color const &bg):
+backend_SDL::backend_SDL(int width, int height, Color const &bg):
     Window(width, height, bg),
     _rightClickDown(false),
     _mouseX(0), _mouseY(0)
 {
-    InitSDLOnce();
-
     m_window = SDL_CreateWindow(
         "3Displayer",  SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
         width, height, SDL_WINDOW_RESIZABLE);
@@ -78,14 +112,32 @@ SDL_Window::SDL_Window(int width, int height, Color const &bg):
         throw exception(string("Could not create window: ")+SDL_GetError());
 
     m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_SOFTWARE);
+    // m_texture = SDL_CreateTexture(m_renderer, SDL_PIXELFORMAT_RGBA8888,
+    //                               SDL_TEXTUREACCESS_STREAMING, width, height);
+    // m_softSurface.resize(width * height);
 }
 
-bool SDL_Window::PollEvent(Event &event)
+void backend_SDL::WaitEvent(Event &event)
+{
+    SDL_Event sdl_event;
+    while (SDL_WaitEvent(&sdl_event) == 0)
+    {
+        /* WAIT */
+    }
+    ParseEvent(event, sdl_event);
+}
+
+bool backend_SDL::PollEvent(Event &event)
 {
     SDL_Event sdl_event;
     if (!SDL_PollEvent(&sdl_event))
         return false;
+    ParseEvent(event, sdl_event);
+    return true;
+}
 
+void backend_SDL::ParseEvent(Event &event, SDL_Event &sdl_event)
+{
     event.type = Event::OTHER;
     switch (sdl_event.type) {
     case SDL_QUIT:
@@ -115,10 +167,9 @@ bool SDL_Window::PollEvent(Event &event)
     default:
         break;
     }
-    return true;
 }
 
-void SDL_Window::handleMouseMotionEvent(Event &event, SDL_Event &sdl_event)
+void backend_SDL::handleMouseMotionEvent(Event &event, SDL_Event &sdl_event)
 {
     if (_rightClickDown) {
         event.type = Event::ROTATE;
@@ -136,7 +187,7 @@ void SDL_Window::handleMouseMotionEvent(Event &event, SDL_Event &sdl_event)
     _mouseY = sdl_event.motion.y;
 }
 
-void SDL_Window::handleMouseButtonUpEvent(SDL_Event &sdl_event)
+void backend_SDL::handleMouseButtonUpEvent(SDL_Event &sdl_event)
 {
     switch (sdl_event.button.button) {
     case SDL_BUTTON_RIGHT:
@@ -147,7 +198,7 @@ void SDL_Window::handleMouseButtonUpEvent(SDL_Event &sdl_event)
     }
 }
 
-void SDL_Window::handleMouseButtonDownEvent(SDL_Event &sdl_event)
+void backend_SDL::handleMouseButtonDownEvent(SDL_Event &sdl_event)
 {
     switch (sdl_event.button.button) {
     case SDL_BUTTON_RIGHT:
@@ -158,7 +209,7 @@ void SDL_Window::handleMouseButtonDownEvent(SDL_Event &sdl_event)
     }
 }
 
-void SDL_Window::handleMouseWheelEvent(Event &event, SDL_Event &sdl_event)
+void backend_SDL::handleMouseWheelEvent(Event &event, SDL_Event &sdl_event)
 {
     event.type = Event::TRANSLATE;
     if (sdl_event.wheel.y > 0)
@@ -169,7 +220,7 @@ void SDL_Window::handleMouseWheelEvent(Event &event, SDL_Event &sdl_event)
         event.type = Event::OTHER;
 }
 
-void SDL_Window::handleKeyDownEvent(Event &event, SDL_Event &sdl_event)
+void backend_SDL::handleKeyDownEvent(Event &event, SDL_Event &sdl_event)
 {
     switch (sdl_event.key.keysym.sym) {
     case SDLK_q:
@@ -220,7 +271,7 @@ void SDL_Window::handleKeyDownEvent(Event &event, SDL_Event &sdl_event)
     }
 }
 
-void SDL_Window::handleKeyUpEvent(Event &event, SDL_Event &sdl_event)
+void backend_SDL::handleKeyUpEvent(Event &event, SDL_Event &sdl_event)
 {
     switch (sdl_event.key.keysym.sym) {
     case SDLK_o:
@@ -253,7 +304,7 @@ void SDL_Window::handleKeyUpEvent(Event &event, SDL_Event &sdl_event)
     }
 }
 
-void SDL_Window::handleWindowEvent(Event &event, SDL_Event &sdl_event)
+void backend_SDL::handleWindowEvent(Event &event, SDL_Event &sdl_event)
 {
     switch(sdl_event.window.event) {
     case SDL_WINDOWEVENT_RESIZED:
@@ -266,5 +317,7 @@ void SDL_Window::handleWindowEvent(Event &event, SDL_Event &sdl_event)
     }
 }
 
-}; // end namespace display3r
-
+backend_SDL::~backend_SDL()
+{
+    SDL_DestroyWindow(m_window);
+}

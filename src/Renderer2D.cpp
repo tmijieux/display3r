@@ -21,18 +21,18 @@ static inline int triple(ivec2 a, ivec2 b)
     return a.y*b.x-a.x*b.y;
 }
 
-static inline void loopFLoat(float &f)
+static inline void loopFloat(float &f)
 {
     if (f < 0.)
         f =  f - (int) f + 1;
-    else if (f >= 1)
+    else
         f = f - (int) f;
 }
 
 static inline void TexCoordLoop(vec2 &a)
 {
-    loopFLoat(a.x);
-    loopFLoat(a.y);
+    loopFloat(a.x);
+    loopFloat(a.y);
 }
 
 };
@@ -66,6 +66,19 @@ void Renderer::DrawLine(Line const &L)
 }
 
 void Renderer::DrawLine(ivec2 const &A, ivec2 const &B, float dA, float dB)
+{
+    if (m_drawState & Renderer::VERTEX) {
+        PushState();
+        m_drawColor = Color::BLUE;
+        DrawPixel(A, dA);
+        DrawPixel(B, dB);
+        PopState();
+    }
+    DrawLineInternal(A, B, dA, dB);
+}
+
+void Renderer::DrawLineInternal(ivec2 const &A, ivec2 const &B,
+                                float dA, float dB)
 {
     ivec2 M = A;
     int dx = B.x - A.x;
@@ -118,6 +131,34 @@ void Renderer::DrawTriangle(Triangle const &T)
 
 void Renderer::DrawTriangle(Pixel const &A, Pixel const &B, Pixel const &C)
 {
+    if (m_drawState == 0)
+        return;
+    if (m_drawState & Renderer::VERTEX) {
+        PushState();
+        m_drawColor = Color::BLUE;
+        DrawPixel(C.pos, C.depth);
+        DrawPixel(B.pos, B.depth);
+        DrawPixel(C.pos, C.depth);
+        PopState();
+    }
+    if (m_drawState & Renderer::WIREFRAME) {
+        PushState();
+        m_drawColor = Color::RED;
+        DrawLineInternal(A.pos, B.pos, A.depth, B.depth);
+        DrawLineInternal(A.pos, C.pos, A.depth, C.depth);
+        DrawLineInternal(B.pos, C.pos, B.depth, C.depth);
+        PopState();
+    }
+    if (m_drawState & Renderer::FACE)
+        DrawTriangleInternal(A, B, C);
+
+    // normals cannot be done here since we do not have normals anymore
+    // this is handled in DrawFace() (Renderer3D.cpp)
+}
+
+void Renderer::DrawTriangleInternal(
+    Pixel const &A, Pixel const &B, Pixel const &C)
+{
     ivec2 AB = B.pos - A.pos;
     ivec2 BC = C.pos - B.pos;
     ivec2 CA = A.pos - C.pos;
@@ -145,9 +186,6 @@ void Renderer::DrawTriangle(Pixel const &A, Pixel const &B, Pixel const &C)
 
     int det = triple(CA, AB);
     ivec2 M;
-    cout << "A.light: " << A.light << endl;
-    cout << "B.light: " << B.light << endl;
-    cout << "C.light: " << C.light << endl;
 
     for (M.y = minH; M.y <= maxH; ++M.y) {
 	ivec2 AM, BM, CM;
@@ -168,7 +206,6 @@ void Renderer::DrawTriangle(Pixel const &A, Pixel const &B, Pixel const &C)
 	       (PAlpha = triple(BC, BM)) >= 0 &&
 	       (PBeta = triple(CA, CM)) >= 0 &&
 	       (PGamma = triple(AB, AM)) >= 0)
-            // MACHINE GUN!! (pour reprendre les termes de Romain)
         {
 	    float alpha = (float) PAlpha / (float) det;
 	    float beta = (float) PBeta / (float) det;
@@ -178,7 +215,7 @@ void Renderer::DrawTriangle(Pixel const &A, Pixel const &B, Pixel const &C)
 	    if ((*m_zbuf)[M] < m_nearplan || (*m_zbuf)[M] > depthM)
             {
 		Color c, colorM;
-                colorM = Interpolate(
+                colorM = Color::Interpolate(
                     A.light, B.light, C.light, alpha, beta, gamma);
 
 		if (m_texture != NULL) {

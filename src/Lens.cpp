@@ -7,11 +7,9 @@
 #include "display3r/Lens.hpp"
 #include "display3r/Camera.hpp"
 #include "display3r/Util.hpp"
-
+#include "display3r/Config.hpp"
 
 #define MAXWINDOWS 8
-#define SQRMAXWINDOWS SQUARE(MAXWINDOWS)
-
 
 using display3r::Lens;
 using display3r::Color;

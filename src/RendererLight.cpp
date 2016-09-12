@@ -31,7 +31,6 @@ Color Light::Compute(vec3 const &A, vec3 const &nA)
 
     if (m_inner < 0) {
         scale = FormatScale(m_intensity * dot(m_direction, nA));
-        cout << "scale: " << scale<< endl;
         c = m_color * scale;
     } else if (angle < m_inner) {
         scale = FormatScale(m_intensity * dot(OA, nA) / CUBE(dOA));
@@ -42,8 +41,6 @@ Color Light::Compute(vec3 const &A, vec3 const &nA)
                              dot(OA, nA) / CUBE(dOA)  );
         c = m_color * scale;
     }
-    cout << "color: " << c << endl;
-
     return c;
 }
 
@@ -53,9 +50,7 @@ Color Renderer::ComputeLight(vec3 const &pos, vec3 const &normal)
         return Color::BLACK;
 
     Color c = Color::BLACK;
-    for (auto &light : *m_lights) {
+    for (auto &light : *m_lights)
         c = c + light.Compute(pos, normal);
-        cout << "color sumX: " << c<< endl;
-    }
     return c;
 }

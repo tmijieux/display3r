@@ -30,14 +30,12 @@ struct Color {
     void Average(Color const &o, unsigned char scale);
 
     static Color FromString(std::string const&);
+    static Color Interpolate(
+        Color const &A, Color const &B, Color const &C,
+        float a, float b, float c);
 };
 
-
-Color Interpolate(Color const &A, Color const &B, Color const &C,
-                  float a, float b, float c);
-
-};
-
+}; // end namespace display3r
 
 namespace std {
 
@@ -47,5 +45,6 @@ static inline ostream &operator<<(ostream &s, display3r::Color const &c)
     return s;
 }
 
-};
+};  // end namespace std
+
 #endif // DISPLAY3R_COLOR_H

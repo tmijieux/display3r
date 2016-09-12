@@ -4,32 +4,49 @@
 #include <string>
 #include <set>
 #include <boost/program_options.hpp>
-
+#include <iostream>
 #include "display3r/Color.hpp"
 
 namespace po = boost::program_options;
-
 namespace display3r {
 
-class Config : public po::variables_map {
-public:
+class Config {
+public /*methods*/:
+    Config(int &argc, char **&argv);
+    po::variable_value const &operator[](std::string key) const;
+
+public /*attributes*/:
     std::string SceneCamera;
     std::string WindowBackend;
-    int WindowWidth;
-    int WindowHeight;
     Color WindowBackground;
     Color RendererUntextured;
+    int WindowWidth;
+    int WindowHeight;
 
-    Config(int &argc, char **&argv);
+private /*methods*/:
+    void ParseConfigFile();
+    void ParseConfigFile(std::istream &ifs);
 
-private:
+    void WriteDefaultConfigFile();
+    void WriteDefaultConfigFile(std::ostream &out);
+
+    void ListObjects();
+    void ShowObjects();
+
+    void ConfigDescription(po::options_description&);
+    void CommandLineDescription(po::options_description&);
+
+
+private /*attributes*/:
     std::set<std::string> m_backends;
     std::set<std::string> m_lenses;
     std::set<std::string> m_cameras;
     std::set<std::string> m_lights;
 
-    void ParseConfigFile(std::istream &ifs);
-    void AddConfigDescriptions(po::options_description&);
+    po::variables_map m_config_vm;
+    std::string m_match_pattern;
+    std::string m_config_filename;
+    std::string m_output_config_filename;
 };
 
 };

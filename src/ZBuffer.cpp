@@ -17,4 +17,3 @@ void ZBuffer::Resize(int width, int height)
     m_width = width;
     m_buf.resize(width*height);
 }
-

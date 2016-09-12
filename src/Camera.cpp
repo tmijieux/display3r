@@ -2,6 +2,7 @@
 #include "display3r/Camera.hpp"
 #include "display3r/Util.hpp"
 #include "display3r/Lens.hpp"
+#include "display3r/Config.hpp"
 
 using display3r::Camera;
 using display3r::Direction;
@@ -27,6 +28,9 @@ Camera::Camera(std::string const &name, Config const &conf)
 
     vector<string> lenses;
     lenses = conf[id+"lens"].as<vector<string> >();
+    Frame::Rotate(i, theta);
+    Frame::Rotate(j, phi);
+    Frame::Rotate(k, rho);
 
     cout << "Camera '" << name << "':" << endl;
     for (auto &l : lenses) {
@@ -42,9 +46,11 @@ Camera::Camera(std::string const &name, Config const &conf)
 
 void Camera::Rotate(Direction direction)
 {
+    static vec3 up(0.f, 0.f, 1.f);
+
     switch (direction) {
-    case LEFT:  Frame::Rotate(k, -rspeed);    break;
-    case RIGHT: Frame::Rotate(k, rspeed);     break;
+    case LEFT:  Frame::Rotate(up, rspeed);    break;
+    case RIGHT: Frame::Rotate(up, -rspeed);   break;
     case UP:    Frame::Rotate(i, rspeed);     break;
     case DOWN:  Frame::Rotate(i, -rspeed);    break;
     default:

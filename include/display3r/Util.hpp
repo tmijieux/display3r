@@ -4,6 +4,8 @@
 #include <glm/glm.hpp>
 #include <iostream>
 
+#define SQUARE(x) ((x)*(x))
+
 #ifdef MAX
 #undef MAX
 #endif

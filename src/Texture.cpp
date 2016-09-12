@@ -36,7 +36,6 @@ Texture::Texture(string const &filename):
     m_height = m_surface->h;
     m_bpp = (int)m_surface->format->BytesPerPixel;
     m_pitch = (int)m_surface->pitch;
-    cout << "Pitch: " << (int)m_pitch << endl;
 }
 
 Color Texture::GetColor(vec2 const &P)

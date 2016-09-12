@@ -3,11 +3,11 @@
 
 #include <glm/glm.hpp>
 #include "display3r/Color.hpp"
-#include "display3r/Config.hpp"
 
 using namespace glm;
 
 namespace display3r {
+class Config;
 
 class Light {
 public:

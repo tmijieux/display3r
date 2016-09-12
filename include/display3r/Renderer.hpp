@@ -37,9 +37,7 @@ public:
         VERTEX    = 0x01,
         WIREFRAME = 0x02,
         FACE      = 0x04,
-
         NORMAL    = 0x08,
-
     };
 
     Renderer(Window *window, Color const &untextured);
@@ -70,6 +68,7 @@ public:
     void SetLens(Lens *);
 
     void SetDrawState(DrawState drawState);
+    void ToggleDrawState(DrawState drawState);
     void SetColor(Color const &drawColor);
     void PushState();
     void PopState();
@@ -78,7 +77,7 @@ private:
     Color ComputeLight(vec3 const &pos, vec3 const &normal);
     void DrawLexel(ivec2 P, Color color);
     vec3 ProjectPoint(vec3 const &A, vec3 const& B);
-    vec2 ProjectCoord(vec3 const& OA, float depth);
+    ivec2 ProjectCoord(vec3 const& OA, float depth);
 
     void DrawTwoSubFaces(vec3 const &A, vec3 const &B, vec3 const &C,
                          float dA, float dB, float dC,
@@ -90,6 +89,9 @@ private:
                         vec3 const &OA,
                         vec2 const &U, vec2 const &V, vec2 const &W,
                         vec3 const &nA, vec3 const &nB, vec3 const &nC);
+    void DrawLineInternal(ivec2 const &A, ivec2 const &B, float dA, float dB);
+    void DrawTriangleInternal(Pixel const &A, Pixel const &B, Pixel const &C);
+
 
 private:
     Lens const *m_lens;
@@ -98,7 +100,7 @@ private:
     Frame m_camera;
     ZBuffer *m_zbuf;
     int m_width, m_height;
-    float m_nearplan;
+    float m_nearplan, m_farplan;
     float m_hfov, m_wfov;
 
     DrawState m_drawState;

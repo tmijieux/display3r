@@ -5,7 +5,6 @@
 #include <glm/glm.hpp>
 
 #include "display3r/Color.hpp"
-#include "display3r/Config.hpp"
 #include "display3r/Frame.hpp"
 #include "display3r/ZBuffer.hpp"
 
@@ -14,6 +13,7 @@ namespace display3r {
 using namespace glm;
 
 class Camera;
+class Config;
 
 class Lens : public Frame {
 public:
@@ -22,8 +22,8 @@ public:
 
     inline bool IsValidCoordinate(ivec2 const &c) const
     {
-        return ((c.y >= 0) && (c.y < m_windowHeightA) &&
-                (c.x >= 0) && (c.x < m_windowWidthA));
+        return ((c.x >= 0) && (c.x < m_windowWidthA) &&
+                (c.y >= 0) && (c.y < m_windowHeightA));
     }
 
     inline float GetHFov() const { return m_hfov; }
