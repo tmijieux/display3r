@@ -30,7 +30,16 @@ void *SharedLibrary::symbol(char const *sym)
     return s;
 }
 
+SharedLibrary::~SharedLibrary()
+{
+    if (m_handle != NULL)
+        dlclose(m_handle);
+    m_handle = NULL;
+}
+
 void SharedLibrary::Close()
 {
-    dlclose(m_handle);
+    if (m_handle != NULL)
+        dlclose(m_handle);
+    m_handle = NULL;
 }

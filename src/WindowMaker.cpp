@@ -15,8 +15,9 @@ Window *WindowMaker::MakeWindow(Config const &conf)
     string plugin_file = conf[backendID+"lib"].as<string>();
     cout << "plugin file: " << plugin_file << endl;
 
-    SharedLibrary *dll;
-    dll = new SharedLibrary(plugin_file, SharedLibraryFlag::LOCAL);
+    shared_ptr<SharedLibrary> dll(
+        new SharedLibrary(plugin_file, SharedLibraryFlag::LOCAL));
+
     m_dlls.push_back(dll);
 
     PluginDetails *info;
@@ -27,12 +28,3 @@ Window *WindowMaker::MakeWindow(Config const &conf)
                           conf.WindowHeight,
                           conf.WindowBackground);
 }
-
-WindowMaker::~WindowMaker()
-{
-    for (auto s : m_dlls) {
-        s->Close();
-        delete s;
-    }
-}
-

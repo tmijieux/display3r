@@ -251,7 +251,7 @@ static void
 PrintVariableMatching(po::variables_map const &vm,
                       std::string const &pattern)
 {
-    for (auto &i  : vm)
+    for (auto &i  : vm) {
         if (i.first.find(pattern) != string::npos) {
             std::cout << i.first << "=";
             auto& value = i.second.value();
@@ -270,6 +270,7 @@ PrintVariableMatching(po::variables_map const &vm,
                 cout << "<CANNOT DISPLAY VALUE>";
             cout << endl;
         }
+    }
 }
 
 void Config::ShowObjects()

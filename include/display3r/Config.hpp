@@ -36,7 +36,6 @@ private /*methods*/:
     void ConfigDescription(po::options_description&);
     void CommandLineDescription(po::options_description&);
 
-
 private /*attributes*/:
     std::set<std::string> m_backends;
     std::set<std::string> m_lenses;

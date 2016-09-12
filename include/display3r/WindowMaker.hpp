@@ -2,6 +2,7 @@
 #define WINDOWMAKER_H
 
 #include <vector>
+#include <memory>
 #include "display3r/Color.hpp"
 
 namespace display3r {
@@ -17,12 +18,10 @@ public:
 class WindowMaker {
 public:
     Window *MakeWindow(Config const &conf);
-    ~WindowMaker();
 
 private:
-    std::vector<SharedLibrary*> m_dlls;
+    std::vector<std::shared_ptr<SharedLibrary> > m_dlls;
 };
-
 
 };
 #endif //WINDOWMAKER_H

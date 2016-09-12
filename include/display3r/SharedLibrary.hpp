@@ -11,6 +11,8 @@ enum SharedLibraryFlag {
 class SharedLibrary{
 public:
     SharedLibrary(std::string name, SharedLibraryFlag flag = LOCAL);
+    ~SharedLibrary();
+
     void Close();
     void *symbol(char const *);
 private:
