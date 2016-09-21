@@ -64,7 +64,7 @@ void backend_ncurses::SetPixel(ivec2 const &A, Color const &c)
 	mvprintw(A.y, 2 * A.x, " ");
 	attroff(COLOR_PAIR(downer));
 	attron(COLOR_PAIR(upper));
-	mvprintw(A.y, 2 * A.y + 1, " ");
+	mvprintw(A.y, 2 * A.x + 1, " ");
 	attroff(COLOR_PAIR(upper));
     }
 }
