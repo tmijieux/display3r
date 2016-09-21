@@ -4,6 +4,7 @@
 #include <vector>
 #include <memory>
 #include "display3r/Color.hpp"
+#include <boost/dll/import.hpp>
 
 namespace display3r {
 class SharedLibrary;
@@ -20,8 +21,9 @@ public:
     Window *MakeWindow(Config const &conf);
 
 private:
-    std::vector<std::shared_ptr<SharedLibrary> > m_dlls;
+    std::vector<boost::dll::shared_library> m_dlls;
 };
 
 };
+
 #endif //WINDOWMAKER_H
