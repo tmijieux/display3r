@@ -7,7 +7,7 @@ set(display3r_headers
   ${HEADER_DIRECTORY}/Solid.hpp
   ${HEADER_DIRECTORY}/Frame.hpp
   ${HEADER_DIRECTORY}/Renderer.hpp
-  ${HEADER_DIRECTORY}/equation.hpp
+  ${HEADER_DIRECTORY}/Equation.hpp
   ${HEADER_DIRECTORY}/Window.hpp
   ${HEADER_DIRECTORY}/WindowMaker.hpp
   ${HEADER_DIRECTORY}/Drawable.hpp
@@ -55,14 +55,14 @@ install(TARGETS SDL_3displayer LIBRARY DESTINATION bin)
 if(NOT WIN32)
 	set(ncurses_backend_src  ncurses/backend_ncurses.cpp ncurses/ncurses_ctl.cpp)
 	add_library(ncurses_3displayer MODULE ${ncurses_backend_src})
-	target_link_libraries(ncurses_3displayer ncursesw)
+	target_link_libraries(ncurses_3displayer ncursesw ${Boost_LIBRARIES})
 	add_sanitizers(ncurses_3displayer)
 	install(TARGETS ncurses_3displayer LIBRARY DESTINATION bin)
 endif()
 
 add_executable(display3r ${display3r_src} ${display3r_headers})
 target_compile_features(display3r PRIVATE cxx_range_for)
-target_link_libraries(display3r ${SDL2_LIBRARY} ${Boost_LIBRARIES})
+target_link_libraries(display3r ${SDL2_LIBRARY} ${Boost_LIBRARIES} ${CMAKE_DL_LIBS})
 add_sanitizers(display3r)
 install(TARGETS display3r RUNTIME DESTINATION bin)
 

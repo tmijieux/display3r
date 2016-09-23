@@ -16,6 +16,10 @@ elseif(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
 endif()
 
+if (UNIX)
+  set(CMAKE_MODULE_LINKER_FLAGS "-Wl,--no-undefined" ${CMAKE_MODULE_LINKER_FLAGS})
+endif()
+
 set(Boost_USE_STATIC_LIBS ON)
 add_definitions( -DBOOST_ALL_NO_LIB )
 
@@ -23,15 +27,14 @@ add_definitions( -DBOOST_ALL_NO_LIB )
 
 find_package(Sanitizers)
 find_package(SDL2 REQUIRED)
-find_package(Boost COMPONENTS regex program_options filesystem REQUIRED)
-find_package(GLM)
+find_package(Boost COMPONENTS system program_options filesystem REQUIRED)
+find_package(glm REQUIRED CONFIG)
 
 include_directories(include)
 include_directories(${Boost_INCLUDE_DIRS})
 include_directories(${SDL2_INCLUDE_DIR})
 include_directories(${GLM_INCLUDE_DIRS})
 
-add_subdirectory(include)
 add_subdirectory(src)
 
 install(
