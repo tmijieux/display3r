@@ -2,20 +2,13 @@
 #include "display3r/Color.hpp"
 #include "display3r/Util.hpp"
 
-using display3r::Color;
+using namespace display3r;
 
 Color Color::RED(255, 0, 0);
 Color Color::GREEN(0, 255, 0);
 Color Color::BLUE(0, 0, 255);
 Color Color::BLACK(0, 0, 0);
 Color Color::WHITE(255, 255, 255);
-
-Color::Color(uint8_t r_, uint8_t g_, uint8_t b_):
-    r(r_), g(g_), b(b_) {}
-
-Color::Color():
-    r(0), g(0), b(0) {}
-
 
 Color Color::operator*(float scale) const
 {
@@ -28,7 +21,7 @@ Color Color::operator*(float scale) const
 
 static inline unsigned char sum(unsigned int a, unsigned int b)
 {
-    return MIN(255, a+b);
+    return (unsigned char) MIN(255, a+b);
 }
 
 Color Color::operator+(Color const &o) const
@@ -50,7 +43,7 @@ void Color::Filter(Color const &o)
 
 static inline unsigned char prod(unsigned int a, unsigned int b)
 {
-    return a * b / 255;
+    return (unsigned char) (a * b / 255);
 }
 
 Color Color::operator*(Color const &o) const
@@ -75,7 +68,7 @@ Color Color::FromString(std::string const &s)
     ss.imbue(std::locale("C"));
     int r, g, b;
     ss >> r >> g >> b;
-    return Color(r, g, b);
+	return Color((uint8_t)r, (uint8_t)g, (uint8_t)b);
 }
 
 Color Color::Interpolate(

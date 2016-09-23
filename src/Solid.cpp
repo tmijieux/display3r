@@ -8,9 +8,7 @@
 #include "display3r/Renderer.hpp"
 
 using namespace std;
-using display3r::Solid;
-using display3r::Vertex;
-using display3r::Face;
+using namespace display3r;
 
 namespace display3r {
 
@@ -167,10 +165,9 @@ void Solid::DrawHandler(Renderer &renderer)
     renderer.BindTexture(NULL); // unbind texture
 }
 
-
 Solid::Solid(Equation const&, Texture*)
 {
-    throw exception("equation loading not implemented, sorry");
+    throw display3r::exception("equation loading not implemented, sorry");
 }
 
 // Solid::Solid(Equation &eq, string texpath)

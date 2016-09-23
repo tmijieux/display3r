@@ -18,8 +18,10 @@ struct Color {
     uint8_t g;
     uint8_t b;
 
-    Color();
-    Color(uint8_t r, uint8_t g, uint8_t b);
+	Color() :
+		r(0), g(0), b(0) {}
+	Color(uint8_t _r, uint8_t _g, uint8_t _b):
+		r(_r), g(_g), b(_b) {}
 
     Color operator*(float a) const;
 

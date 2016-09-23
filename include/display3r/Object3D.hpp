@@ -5,9 +5,12 @@
 
 namespace display3r {
 
-using namespace glm;
+using glm::ivec2;
+using glm::vec3;
+using glm::vec2;
 
 struct Vertex {
+public:
     vec3 position;
     vec3 normal;
     vec2 texcoord;
@@ -17,12 +20,14 @@ struct Vertex {
 };
 
 struct Segment {
+public:
     vec3 A;
     vec3 B;
     Segment(vec3 const& a, vec3 const& b): A(a), B(b) {}
 };
 
 struct Face {
+public:
     Vertex A;
     Vertex B;
     Vertex C;

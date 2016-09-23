@@ -11,8 +11,7 @@
 //#include "display3r/project.hpp"
 
 using namespace std;
-using display3r::Frame;
-using display3r::Vertex;
+using namespace display3r;
 
 Frame::Frame():
     O(0.), i(1., 0., 0.), j(0., 1., 0.), k(0., 0., 1.)
@@ -48,10 +47,13 @@ void Frame::DrawHandler(Renderer &renderer)
 
 void Frame::Rotate(vec3 const &axis, float angle)
 {
-    mat4 R = glm::rotate(angle, axis);
-    i = normalize(vec3( R * vec4(i, 1.0) ));
-    j = normalize(vec3( R * vec4(j, 1.0) ));
-    k = normalize(vec3( R * vec4(k, 1.0) ));
+	typedef glm::vec3 vec3;
+	typedef glm::vec4 vec4;
+
+    glm::mat4 R = glm::rotate(angle, axis);
+    i = glm::normalize(vec3( R * vec4(i, 1.0) ));
+    j = glm::normalize(vec3( R * vec4(j, 1.0) ));
+    k = glm::normalize(vec3( R * vec4(k, 1.0) ));
     OnMovement();
 }
 

@@ -12,15 +12,13 @@
 #include "display3r/Light.hpp"
 #include "display3r/Util.hpp"
 
-using namespace glm;
-
 namespace display3r {
-class Vertex;
-class Face;
-class Segment;
-class Pixel;
-class Line;
-class Triangle;
+struct Vertex;
+struct Face;
+struct Segment;
+struct Pixel;
+struct Line;
+struct Triangle;
 class Config;
 class Window;
 class ZBuffer;
@@ -28,6 +26,9 @@ class ZBuffer;
 
 namespace display3r {
 
+using glm::ivec2;
+using glm::vec3;
+using glm::vec2;
 
 class Renderer {
 public:

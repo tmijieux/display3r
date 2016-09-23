@@ -3,25 +3,19 @@
 
 #include <glm/glm.hpp>
 
-namespace display3r {
-
-struct Frame;
-struct Renderer;
-
-};
+namespace display3r { struct Frame; };
 
 #include "display3r/Drawable.hpp"
 
-
-using namespace glm;
 namespace display3r {
 
-struct Frame : public Drawable  {
+class Renderer;
+using glm::ivec2;
+using glm::vec3;
+using glm::vec2;
 
-    union {
-        vec3 O;
-        vec3 position;
-    };
+struct Frame : public Drawable  {
+    vec3 O;
     vec3 i, j, k;
 
     Frame();
@@ -31,10 +25,9 @@ struct Frame : public Drawable  {
     void Translate(vec3 const &move);
     void Reset();
 
-
 protected:
     virtual void OnMovement() {}
-    void DrawHandler(Renderer &renderer) override;
+	virtual void DrawHandler(Renderer &renderer) override;
 };
 
 

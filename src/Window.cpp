@@ -4,14 +4,7 @@
 #include "display3r/Scene.hpp"
 #include "display3r/Renderer.hpp"
 
-
-using display3r::Window;
-using display3r::Renderer;
-
-Window::Window(int width, int height, Color const &bg):
-    m_width(width), m_height(height), m_bgColor(bg)
-{
-}
+using namespace display3r;
 
 bool Window::HandleEvents(Scene &scene, Renderer &renderer)
 {

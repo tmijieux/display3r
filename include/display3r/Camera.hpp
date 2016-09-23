@@ -10,7 +10,9 @@ namespace display3r { class Camera; }
 #include "display3r/Frame.hpp"
 #include "display3r/Lens.hpp"
 
-using namespace glm;
+using glm::ivec2;
+using glm::vec3;
+using glm::vec2;
 
 namespace display3r {
 class Config;
@@ -34,8 +36,8 @@ public:
     std::vector<Lens> &GetLenses();
 
 protected:
-    void OnMovement() override;
-    void DrawHandler(Renderer&) override {/*i'm invisible!*/}
+    virtual void OnMovement() override;
+    virtual void DrawHandler(Renderer&) override {/*Camera is invisible; thus this function does nothing*/}
 
     float theta, phi, rho;
     float vspeed;

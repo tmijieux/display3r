@@ -7,9 +7,11 @@
 #include <glm/glm.hpp>
 #include "display3r/Color.hpp"
 
-using namespace glm;
-
 namespace display3r {
+
+using glm::ivec2;
+using glm::vec3;
+using glm::vec2;
 
 class Texture {
 public:

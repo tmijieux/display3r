@@ -1,3 +1,5 @@
+#ifdef HAVE_NCURSES
+
 #include <string>
 #include <ncurses.h>
 
@@ -140,3 +142,6 @@ bool backend_ncurses::InitColor(Color background)
     SetIDWithCOLOR(0, r, g, b);
     return true;
 }
+
+
+#endif

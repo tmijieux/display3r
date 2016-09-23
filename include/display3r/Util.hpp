@@ -1,6 +1,9 @@
 #ifndef DISPLAY3R_UTIL_H
 #define DISPLAY3R_UTIL_H
 
+#define _USE_MATH_DEFINES
+#include <cmath>
+
 #include <glm/glm.hpp>
 #include <iostream>
 
@@ -19,22 +22,20 @@
 #define DEGREE_TO_RADIAN(x) (((float)(x)) * M_PI / 180.)
 
 namespace display3r {
-using namespace glm;
 
-vec3 ParseVec3(std::string const &);
+glm::vec3 ParseVec3(std::string const &);
 
 };
 
 namespace std {
 
-using namespace glm;
-static inline ostream &operator<<(ostream &s, vec3 const &v)
+static inline ostream &operator<<(ostream &s, glm::vec3 const &v)
 {
     s << v.x << " " << v.y << " " << v.z;
     return s;
 }
 
-static inline ostream &operator<<(ostream &s, vec2 const &v)
+static inline ostream &operator<<(ostream &s, glm::vec2 const &v)
 {
     s << v.x << " " << v.y;
     return s;

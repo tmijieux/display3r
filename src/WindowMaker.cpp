@@ -1,12 +1,9 @@
 #include "display3r/WindowMaker.hpp"
 #include "display3r/Window.hpp"
-#include "display3r/SharedLibrary.hpp"
 #include "display3r/PluginDetails.hpp"
 #include "display3r/Config.hpp"
 
-using display3r::WindowMaker;
-using display3r::Window;
-using display3r::Config;
+using namespace display3r;
 using namespace std;
 
 namespace dll = boost::dll;

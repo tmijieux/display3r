@@ -9,9 +9,7 @@
 #include "display3r/Light.hpp"
 
 using namespace std;
-using display3r::Renderer;
-using display3r::Color;
-using display3r::Light;
+using namespace display3r;
 
 #define CUBE(x) ((x)*(x)*(x))
 

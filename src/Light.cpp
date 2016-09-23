@@ -6,7 +6,7 @@
 #include "display3r/Util.hpp"
 #include "display3r/Config.hpp"
 
-using display3r::Light;
+using namespace display3r;
 using namespace std;
 
 Light::Light():

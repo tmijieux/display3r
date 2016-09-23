@@ -1,7 +1,9 @@
 #include <algorithm>
 #include "display3r/ZBuffer.hpp"
 
-using display3r::ZBuffer;
+using namespace display3r;
+
+
 ZBuffer::ZBuffer():
     m_width(0)
 {
@@ -9,7 +11,7 @@ ZBuffer::ZBuffer():
 
 void ZBuffer::Clear()
 {
-    std::fill(m_buf.begin(), m_buf.end(), -1.0);
+    std::fill(m_buf.begin(), m_buf.end(), -1.0f);
 }
 
 void ZBuffer::Resize(int width, int height)

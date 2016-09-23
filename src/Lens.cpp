@@ -11,9 +11,7 @@
 
 #define MAXWINDOWS 8
 
-using display3r::Lens;
-using display3r::Color;
-using display3r::ZBuffer;
+using namespace display3r;
 using namespace std;
 
 Lens::Lens(Camera const &camera):
@@ -28,7 +26,7 @@ Lens::Lens(Camera const &camera):
     m_overlapping(false),
     m_nearplan(1.), m_farplan(20.),
     m_wfov(DEGREE_TO_RADIAN(90.)),
-    m_hfov(0)
+    m_hfov(0.0f)
 {
     UpdatePosition();
 }

@@ -8,8 +8,7 @@
 #include "display3r/Object2D.hpp"
 
 using namespace std;
-using display3r::Renderer;
-using display3r::Color;
+using namespace display3r;
 
 // return the vector between camera.O and the intersection of
 // (AB) and the NEARPLAN

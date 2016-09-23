@@ -7,11 +7,7 @@
 #include "display3r/Window.hpp"
 #include "display3r/Object2D.hpp"
 
-using display3r::Renderer;
-using display3r::Color;
-using display3r::Pixel;
-using display3r::Line;
-using display3r::Triangle;
+using namespace display3r;
 using namespace std;
 
 namespace display3r {

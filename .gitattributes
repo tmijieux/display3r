@@ -1,0 +1,10 @@
+* text=auto
+*.cpp text
+*.hpp text
+*.cmake text
+
+*.sln text eol=crlf
+
+*.png binary
+*.jpg binary
+*.bmp binary

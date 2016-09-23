@@ -11,7 +11,7 @@
 
 using namespace std;
 using namespace boost::algorithm;
-using display3r::Config;
+using namespace display3r;
 
 void Config::ConfigDescription(po::options_description& config)
 {

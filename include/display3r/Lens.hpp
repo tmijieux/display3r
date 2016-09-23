@@ -10,7 +10,9 @@
 
 namespace display3r {
 
-using namespace glm;
+using glm::ivec2;
+using glm::vec3;
+using glm::vec2;
 
 class Camera;
 class Config;

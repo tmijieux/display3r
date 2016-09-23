@@ -6,8 +6,7 @@
 #include "display3r/Util.hpp"
 
 using namespace std;
-using display3r::Texture;
-using display3r::Color;
+using namespace display3r;
 
 Texture *Texture::LoadTexture(std::string const &filename)
 {

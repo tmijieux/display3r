@@ -4,14 +4,12 @@
 #include "display3r/Lens.hpp"
 #include "display3r/Config.hpp"
 
-using display3r::Camera;
-using display3r::Direction;
-using display3r::Lens;
+using namespace display3r;
 using namespace std;
 
 Camera::Camera():
     Frame(vec3(0.f, -5.f, 0.f)),
-    vspeed(0.1), rspeed(0.1)
+    vspeed(0.1f), rspeed(0.1f)
 {
     m_lenses.push_back(Lens(*this));
 }
@@ -39,6 +37,7 @@ Camera::Camera(std::string const &name, Config const &conf)
             m_lenses.push_back(Lens(*this, l, conf));
             cout << "Success." << endl;
         } catch (std::exception &e) {
+			(void) e;
             cout << " FAILED!" << endl;
         }
     }
@@ -67,7 +66,6 @@ void Camera::Translate(Direction direction)
     case RIGHT:    Frame::Translate(i * vspeed);      break;
     case DOWN:     Frame::Translate(-k * vspeed);     break;
     case UP:       Frame::Translate(k *vspeed);       break;
-
     }
 }
 

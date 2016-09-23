@@ -10,9 +10,7 @@
 DISPLAY3R_PLUGIN(backend_SDL_factory, "SDL window backend", "0.1");
 
 using namespace display3r;
-using std::string;
-using std::cout;
-using std::endl;
+using namespace std;
 
 bool backend_SDL_factory::SDL_Inited = false;
 
@@ -24,7 +22,7 @@ backend_SDL_factory::MakeWindow(int width, int height, Color c)
     try {
         InitSDLOnce();
         w = new backend_SDL(width, height, c);
-    } catch (exception &e) {
+    } catch (std::exception &e) {
         cout << e.what() << endl;
         return NULL;
     }
@@ -37,7 +35,7 @@ void backend_SDL_factory::InitSDLOnce()
         return;
 
     if (SDL_Init(SDL_INIT_VIDEO) == -1)
-        throw exception(string("Error SDL_Init")+SDL_GetError());
+        throw display3r::exception(string("Error SDL_Init")+SDL_GetError());
     SDL_Inited = true;
 }
 
@@ -82,7 +80,7 @@ void backend_SDL::SetPixel(ivec2 const &coord, Color const &c)
     // m_softSurface[coord.y*m_width+coord.x] = pixel;
 }
 
-Color backend_SDL::GetPixel(ivec2 const & coord)
+Color backend_SDL::GetPixel(ivec2 const &coord)
 {
     Color c;
     SDL_Rect rect;
@@ -109,7 +107,7 @@ backend_SDL::backend_SDL(int width, int height, Color const &bg):
         "3Displayer",  SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
         width, height, SDL_WINDOW_RESIZABLE);
     if (m_window == NULL)
-        throw exception(string("Could not create window: ")+SDL_GetError());
+        throw display3r::exception(string("Could not create window: ")+SDL_GetError());
 
     m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_SOFTWARE);
     // m_texture = SDL_CreateTexture(m_renderer, SDL_PIXELFORMAT_RGBA8888,

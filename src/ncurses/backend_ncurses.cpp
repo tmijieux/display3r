@@ -1,3 +1,5 @@
+#ifdef HAVE_NCURSES
+
 #include <string>
 #include <ncurses.h>
 
@@ -202,3 +204,6 @@ void backend_ncurses::ParseEvent(Event &event, int c)
     }
 }
 
+
+
+#endif

@@ -14,13 +14,9 @@
 #include "display3r/Equation.hpp"
 #include "display3r/Renderer.hpp"
 
-using std::string;
-using std::cout;
-using std::endl;
-using display3r::Scene;
-using display3r::Frame;
-using display3r::Camera;
-using display3r::Direction;
+using namespace std;
+using namespace display3r;
+
 
 Scene::Scene(Config const &conf):
     m_camera(conf.SceneCamera, conf)
@@ -34,6 +30,7 @@ Scene::Scene(Config const &conf):
             m_lights.push_back(Light(l, conf));
             cout << "Success." << endl;
         } catch (std::exception &e) {
+			(void) e;
             cout << "ERROR!" << endl;
         }
     }

@@ -1,6 +1,6 @@
 #include "display3r/Drawable.hpp"
 
-using display3r::Drawable;
+using namespace display3r;
 
 Drawable::Drawable():
     m_hidden(false)

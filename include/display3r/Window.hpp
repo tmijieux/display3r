@@ -5,9 +5,12 @@
 #include "display3r/Renderer.hpp"
 #include "display3r/Color.hpp"
 
-using namespace glm;
 
 namespace display3r {
+
+using glm::ivec2;
+using glm::vec3;
+using glm::vec2;
 
 class Scene;
 struct Event;
@@ -32,8 +35,11 @@ public:
     bool HandleEvents(Scene &scene, Renderer &renderer);
 
 protected:
-    Window(int window, int height, Color const &backgroundColor);
-    Window(Config const &conf);
+
+	Window(int width, int height, Color const &bg) :
+		m_width(width), m_height(height), m_bgColor(bg)
+	{
+	}
 
     int m_width, m_height;
     Color m_bgColor;

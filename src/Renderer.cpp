@@ -7,8 +7,7 @@
 #include "display3r/Color.hpp"
 
 using namespace std;
-using display3r::Renderer;
-using display3r::ZBuffer;
+using namespace display3r;
 
 Renderer::Renderer(Window *window, Color const &untextured):
     m_lens(NULL),
