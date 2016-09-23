@@ -2,6 +2,7 @@
 *.cpp text
 *.hpp text
 *.cmake text
+*.obj text
 
 *.sln text eol=crlf
 
